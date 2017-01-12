@@ -32,7 +32,7 @@
 		display: block;
 	}
 	.userChoices {
-		display: inline-block;
+		display: inline-block !important;
 		font-size: 12px;
 		font-style: italic;
 	}
@@ -53,7 +53,11 @@
 	fieldset label {   
 		font-weight: normal;
 		padding-right: 5px;
-	}  
+	} 
+	#timeSeries {
+		position: relative;
+		left: 5px;
+	} 
     </style>
 {% endblock %}
 
@@ -88,6 +92,7 @@
   </fieldset>
 </fieldset>
 
+<br>
 <div class='mapContainer'>
    <div id='title1' class='title'></div>
    <div id='map1' class='map'></div>
@@ -111,6 +116,12 @@
    <div id='map4' class='map'></div>
    <div id='key4' class='key'><img /></div>
 </div>
+
+<br>
+<br>
+<button id="timeSeries">Display time series</button>
+<br>
+<br>
 {% endblock %}
 
 {% block scripts %}
