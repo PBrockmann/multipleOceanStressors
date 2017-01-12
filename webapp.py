@@ -73,6 +73,22 @@ def contributors():
 #============================================
 @app.route('/data')
 def data():
+	return render_template('data.html')
+
+#============================================
+@app.route('/mydata')
+def mydata():
+	nbMaps = 4
+	cmdArray = [1,2,3,4]
+	listSynchroMapsToSet = list(itertools.permutations(range(1,nbMaps+1), 2))
+    
+    
+	return render_template('mydata.html',  nbMaps=nbMaps, cmdArray=cmdArray, 
+                            listSynchroMapsToSet=listSynchroMapsToSet)	
+
+#============================================
+@app.route('/origdata')
+def origdata():
 
     nbMaps = 4   #len(cmdArray)
     listSynchroMapsToSet = list(itertools.permutations(range(1,nbMaps+1), 2)) 
@@ -166,7 +182,7 @@ def data():
         ))
             
     
-    return render_template('data.html', nbMaps=nbMaps, cmdArray=session['cart'], 
+    return render_template('origdata.html', nbMaps=nbMaps, cmdArray=session['cart'], 
                             listSynchroMapsToSet=listSynchroMapsToSet)
 
 @app.route('/ts_dialog', methods = ['GET'])
