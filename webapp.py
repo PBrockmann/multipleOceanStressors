@@ -70,172 +70,54 @@ def help():
 def contributors():
     return render_template('contributors.html')
 
+
 #============================================
 @app.route('/data')
 def data():
-	return render_template('data.html')
-
-#============================================
-@app.route('/mydata')
-def mydata():
 	nbMaps = 4
 	cmdArray = [1,2,3,4]
 	listSynchroMapsToSet = list(itertools.permutations(range(1,nbMaps+1), 2))
     
     
-	return render_template('mydata.html',  nbMaps=nbMaps, cmdArray=cmdArray, 
+	return render_template('data.html',  nbMaps=nbMaps, cmdArray=cmdArray, 
                             listSynchroMapsToSet=listSynchroMapsToSet)	
 
 #============================================
-@app.route('/origdata')
-def origdata():
-
-    nbMaps = 4   #len(cmdArray)
-    listSynchroMapsToSet = list(itertools.permutations(range(1,nbMaps+1), 2)) 
-       
-    session['cart'] = [1,2,3,4]
-
-    print("request.method in /maps !!!!!!!!!!!: ", request.method)
-    print("request.args: ", request.args)
-    
+@app.route('/timeseries', methods = ['GET'])
+def timeseries():
 
     if request.args.get('REQUEST') == 'calcTimeseries':
-        print("request.args in ts: ", request.args)
-        ts_flag = 'true'        
+      
         XTRANS = str(request.args.get('XTRANS')) # [xlim1:xlim2]
         YTRANS = str(request.args.get('YTRANS')) # [ylim1:ylim2]
 
         XTRANS = XTRANS + "@ave"
         YTRANS = YTRANS + "@ave"
-        print("XTRANS: ", XTRANS) #XTRANS = '51.33:-131.48'
-        print("YTRANS: ", YTRANS) #YTRANS = '-45.7:45.7'
-        # VAR = request.args.get('VAR')
-
-        # for testing only
-        VAR = 'THETAO'   #'temp'
-        # dset = 'levitus_climatology'
-        # pyferret.run('use ' + dset)
-
-        #Bokeh plot code
-        #=======================================================
-        # pyferret.start(journal=False, unmapped=True, quiet=True, verify=False)
-
-        dset = 'thetao_Oyr_ALL_historical_r1i1p1_1870-2005.nc'
-
-        # # pyferret.run("use /prodigfs/project/CARBON/CRESCENDO/thetao_Oyr_ALL_historical_r1i1p1_1870-2005.nc")
-        # pyferret.run("use thetao_Oclim_ALL_piControl_r1i1p1_1990-1999.nc")
-        # pyferret.run("let var=" + VAR + "[k=1,m=1,x=" + XTRANS + ",y=" + YTRANS + "]")
-
-        # tmpfile = tempfile.NamedTemporaryFile(suffix='.csv').name
-
-        # pyferret.run("spawn echo 'date,'" + VAR + " > " + tmpfile)
-        # pyferret.run("list/quiet/nohead/norowlab/precision=7/format=\"comma\"/file=\"" + tmpfile + "\"/append TAX_DATESTRING(t[g=var],var,\"mon\"), var")
-
-        # pyferret.stop()
-
-        # #=======================================================
-        # os.environ[ 'MPLCONFIGDIR' ] = '/tmp/'
-
-        # df = pd.read_csv(tmpfile)
-        #TEMPORARY, FOR ME
-        tmpname = 'teststressors.csv'
-        df = pd.read_csv('/home/users/cnangini/teststressors.csv')
-
-        df['date'] = pd.to_datetime(df['date'], format='%b-%Y')  # convert ferret dates as datetimes
-        # COMMENT OUT FOR ME df = df.set_index('date')
-
-        # ### Plot with bokeh
-        colors = ["#8c564b","#1f77b4","#2ca02c","#d62728","#9467bd","#e377c2","#7f7f7f","#bcbd22","#17bec"]
-
-        dfer = pd.DataFrame()
-        dfer['xval'] = df.ix[:, 0]
-        dfer['yval'] = df.ix[:, 1]
-
-        # Bokeh plot
-        title='Average timeseries for ' + dset + ' (x: ' + XTRANS + ', y: ' + YTRANS + ')'
-        p = figure(title=title,
-                    plot_width=700,plot_height=400)
-        p.line(dfer['xval'], dfer['yval'])
-
-        # format axes        
-        p.xaxis.formatter=DatetimeTickFormatter(formats=dict(
-            hours=["%d %B %Y"],
-            days=["%d %B %Y"],
-            months=["%d %B %Y"],
-            years=["%d %B %Y"],
-        ))
-        p.xaxis.major_label_orientation = pi/4
-        p.yaxis.axis_label = "avg " + VAR
-
-        # create the HTML elements to pass to template
-        figJS,figDiv = components(p,CDN)
-   
-
-        # Render to new page
-        return (render_template('tmp_ts.html',
-            nbMaps=nbMaps, cmdArray=session['cart'],
-            listSynchroMapsToSet=listSynchroMapsToSet,
-            ts_flag=ts_flag,
-            y=dfer['yval'],
-            figJS=figJS,figDiv=figDiv,
-            tmpname=tmpname
-        ))
-            
-    
-    return render_template('origdata.html', nbMaps=nbMaps, cmdArray=session['cart'], 
-                            listSynchroMapsToSet=listSynchroMapsToSet)
-
-@app.route('/ts_dialog', methods = ['GET'])
-def api_tsdialog():
-
-    print("request.method in /dialog !!!!!!!!!!!: ", request.method)
-    print("request.args: ", request.args)
-
-    if request.args.get('REQUEST') == 'calcTimeseries':
-        print("request.args in dialog: ", request.args)
-              
-        XTRANS = str(request.args.get('XTRANS')) # [xlim1:xlim2]
-        YTRANS = str(request.args.get('YTRANS')) # [ylim1:ylim2]
-
-        XTRANS = XTRANS + "@ave"
-        YTRANS = YTRANS + "@ave"
-        print("XTRANS: ", XTRANS) #XTRANS = '51.33:-131.48'
-        print("YTRANS: ", YTRANS) #YTRANS = '-45.7:45.7'
         VAR = request.args.get('VAR')
-        print("VAR: ", VAR)
-
-        # for testing only
-        VAR = 'THETAO'   #'temp'
-       
+      
         #Bokeh plot code
         #=======================================================
-        # pyferret.start(journal=False, unmapped=True, quiet=True, verify=False)
+        pyferret.start(journal=False, unmapped=True, quiet=True, verify=False)
 
-        dset = 'thetao_Oyr_ALL_historical_r1i1p1_1870-2005.nc'
+        pyferret.run("use /prodigfs/project/CARBON/CRESCENDO/thetao_Oyr_ALL_historical_r1i1p1_1870-2005.nc")
+        pyferret.run("let var=" + VAR + "[k=1,m=1,x=" + XTRANS + ",y=" + YTRANS + "]")
 
-        # # pyferret.run("use /prodigfs/project/CARBON/CRESCENDO/thetao_Oyr_ALL_historical_r1i1p1_1870-2005.nc")
-        # pyferret.run("use thetao_Oclim_ALL_piControl_r1i1p1_1990-1999.nc")
-        # pyferret.run("let var=" + VAR + "[k=1,m=1,x=" + XTRANS + ",y=" + YTRANS + "]")
+        tmpfile = tempfile.NamedTemporaryFile(suffix='.csv').name
 
-        # tmpfile = tempfile.NamedTemporaryFile(suffix='.csv').name
+        pyferret.run("spawn echo 'date,'" + VAR + " > " + tmpfile)
+        pyferret.run("list/quiet/nohead/norowlab/precision=7/format=\"comma\"/file=\"" + tmpfile + "\"/append TAX_DATESTRING(t[g=var],var,\"mon\"), var")
 
-        # pyferret.run("spawn echo 'date,'" + VAR + " > " + tmpfile)
-        # pyferret.run("list/quiet/nohead/norowlab/precision=7/format=\"comma\"/file=\"" + tmpfile + "\"/append TAX_DATESTRING(t[g=var],var,\"mon\"), var")
+        pyferret.stop()
 
-        # pyferret.stop()
+        #=======================================================
+        os.environ[ 'MPLCONFIGDIR' ] = '/tmp/'
 
-        # #=======================================================
-        # os.environ[ 'MPLCONFIGDIR' ] = '/tmp/'
-
-        # df = pd.read_csv(tmpfile)
-        #TEMPORARY, FOR ME
-        tmpname = 'teststressors.csv'
-        df = pd.read_csv('/home/users/cnangini/teststressors.csv')
+        df = pd.read_csv(tmpfile)
 
         df['date'] = pd.to_datetime(df['date'], format='%b-%Y')  # convert ferret dates as datetimes
-        # COMMENT OUT FOR ME df = df.set_index('date')
+        df = df.set_index('date')
 
-        # ### Plot with bokeh
+        # Plot with bokeh
         colors = ["#8c564b","#1f77b4","#2ca02c","#d62728","#9467bd","#e377c2","#7f7f7f","#bcbd22","#17bec"]
 
         dfer = pd.DataFrame()
@@ -268,7 +150,6 @@ def api_tsdialog():
         # create the HTML elements to pass to dialog
         figJS,figDiv = components(p,CDN)
 
-        # buttonString = "<button class='btn btn-default' id=\"Download\">Download</button>"
         buttonString = '<a href="/download?&REQUEST=SaveTimeseries&FILENAME=' + basename(fname) + '"><button class="btn btn-default">Download</button></a>'
         print("buttonString: ", buttonString)
 
@@ -281,11 +162,8 @@ def after_this_request(f):
     g.after_request_callbacks.append(f)
     return f
 
-
-
 @app.route('/download')
 def download_ts():
-    print("request.args in download_ts: ", request.args)
 
     if request.args.get('REQUEST') == 'SaveTimeseries':
         
