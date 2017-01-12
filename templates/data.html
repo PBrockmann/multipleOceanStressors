@@ -130,25 +130,25 @@ var qualifiersList = { 'D_SST': '/lev=(-INF)(-4,4,0.5)(INF)/pal=blue_orange.spk'
                        'D_INTPP':  '/lev=(-INF)(-200,200,10)(INF)/pal=magenta_green.spk' };
 
 var titleDict = {
-	'D_SST_RCP85': 'Sea surface temperature change (RCP 8.5)',
-	'D_SST_RCP60': 'Sea surface temperature change (RCP 6.0)',
-	'D_SST_RCP45': 'Sea surface temperature change (RCP 4.5)',
-	'D_SST_RCP26': 'Sea surface temperature change (RCP 2.6)',
+	'D_SST RCP85': 'Sea surface temperature change (RCP 8.5)',
+	'D_SST RCP60': 'Sea surface temperature change (RCP 6.0)',
+	'D_SST RCP45': 'Sea surface temperature change (RCP 4.5)',
+	'D_SST RCP26': 'Sea surface temperature change (RCP 2.6)',
 
-	'D_PH_RCP85': 'Sea surface pH change (RCP 8.5)',
-	'D_PH_RCP60': 'Sea surface pH change (RCP 6.0)',
-	'D_PH_RCP45': 'Sea surface pH change (RCP 4.5)',
-	'D_PH_RCP26': 'Sea surface pH change (RCP 2.6)',
+	'D_PH RCP85': 'Sea surface pH change (RCP 8.5)',
+	'D_PH RCP60': 'Sea surface pH change (RCP 6.0)',
+	'D_PH RCP45': 'Sea surface pH change (RCP 4.5)',
+	'D_PH RCP26': 'Sea surface pH change (RCP 2.6)',
 
-	'D_O2_RCP85': 'Oxygen concentration change at 200-600m (RCP 8.5)',
-	'D_O2_RCP60': 'Oxygen concentration change at 200-600m (RCP 6.0)',
-	'D_O2_RCP45': 'Oxygen concentration change at 200-600m (RCP 4.5)',
-	'D_O2_RCP26': 'Oxygen concentration change at 200-600m (RCP 2.6)',
+	'D_O2 RCP85': 'Oxygen concentration change at 200-600m (RCP 8.5)',
+	'D_O2 RCP60': 'Oxygen concentration change at 200-600m (RCP 6.0)',
+	'D_O2 RCP45': 'Oxygen concentration change at 200-600m (RCP 4.5)',
+	'D_O2 RCP26': 'Oxygen concentration change at 200-600m (RCP 2.6)',
 
-	'D_INTPP_RCP85': 'Integrated net primary productivity change (RCP 8.5)',
-	'D_INTPP_RCP60': 'Integrated net primary productivity change (RCP 6.0)',
-	'D_INTPP_RCP45': 'Integrated net primary productivity change (RCP 4.5)',
-	'D_INTPP_RCP26': 'Integrated net primary productivity change (RCP 2.6)'
+	'D_INTPP RCP85': 'Integrated net primary productivity change (RCP 8.5)',
+	'D_INTPP RCP60': 'Integrated net primary productivity change (RCP 6.0)',
+	'D_INTPP RCP45': 'Integrated net primary productivity change (RCP 4.5)',
+	'D_INTPP RCP26': 'Integrated net primary productivity change (RCP 2.6)'
 };
 
 //===============================================
@@ -238,7 +238,8 @@ $('#dimension').on('change', function() {
 		}
         	wmspyferret_var[mapId].setParams({ command: command, variable: variable.replace('+','%2B') });
         	wmspyferret_mask[mapId].setParams({ variable: mask.replace('+','%2B') });
-		$('#title'+mapId).html(title);
+ 
+		$('#title'+mapId).html(titleDict[title]);
 		$('#key'+mapId).children('img').attr('src', 'http://webportals.ipsl.jussieu.fr/gunicorn1/?SERVICE=WMS&REQUEST=GetColorBar' +
 								'&COMMAND=' + command +
 								'&VARIABLE=' + variable.replace('+','%2B'));
