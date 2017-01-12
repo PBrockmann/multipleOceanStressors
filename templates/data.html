@@ -2,6 +2,336 @@
 
 {% block title %}Ocean Stressors{% endblock %}
 
-{% block page_content %}
-    <p>Here comes the data page
+{% block head %}
+{{ super() }}
+    <link rel='stylesheet' href="{{ url_for('static', filename = 'leaflet.css') }}" />
+    <script src="{{ url_for('static', filename = 'leaflet.js') }}"></script>
+
+    <script src="{{ url_for('static', filename = 'L.Map.Sync.js') }}"></script>
 {% endblock %}
+
+
+{% block styles %}
+{{ super() }}
+    <style type='text/css'>
+        .mapContainer { display: inline-block; margin-left: 10px; margin-top: 10px;}
+        .title { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+        .map { width: 400px; height: 200px; }
+        .key { text-align: center; margin: auto; }
+        .key img { width: 400px; height: 50px; max-width: 400px; }
+	.leaflet-bar a, .leaflet-bar a:hover {
+    		height: 16px;
+    		line-height: 16px;
+    		width: 16px;
+	}
+	.leaflet-control-zoom-in, .leaflet-control-zoom-out {
+    		font-size: 14px;
+		text-indent: 0px;
+	}
+	#dimension{
+		display: block;
+	}
+	.userChoices {
+		display: inline-block;
+		font-size: 12px;
+		font-style: italic;
+	}
+	fieldset {   
+		-moz-border-radius: 8px;
+		border-radius: 8px;
+		-webkit-border-radius: 8px;
+		border: 1px solid silver !important;
+		padding: 10px !important;
+		display: inline-flex !important;
+	}  
+	fieldset legend {   
+		border-style: none;
+		margin-bottom: 0px;
+		width: auto;
+		font-size: 14px;
+	}  
+	fieldset label {   
+		font-weight: normal;
+		padding-right: 5px;
+	}  
+    </style>
+{% endblock %}
+
+
+{% block page_content %}
+<fieldset id="dimension" class="userChoices">
+  <legend>Select</legend>
+  <input class="dimensionInput" type="radio" name="radio-0" value="variable" checked>
+  <label>a&nbsp;variable</label>
+  <fieldset id="variable" class="userChoices">
+    <input class="variableInput" type="radio" name="radio-1" value="D_SST" checked>
+    <label>&delta; SST</label>
+    <input class="variableInput" type="radio" name="radio-1" value="D_PH">
+    <label>&delta; pH</label>
+    <input class="variableInput" type="radio" name="radio-1" value="D_O2">
+    <label>&delta; O2</label>
+    <input class="variableInput" type="radio" name="radio-1" value="D_INTPP">
+    <label>&delta; intPP</label>
+  </fieldset>
+
+  <input class="dimensionInput" type="radio" name="radio-0" value="scenario">
+  <label>or&nbsp;a&nbsp;scenario</label>
+  <fieldset id="scenario" class="userChoices">
+    <input class="scenarioInput" type="radio" name="radio-2" value="RCP85" checked>
+    <label>RCP 8.5</label>
+    <input class="scenarioInput" type="radio" name="radio-2" value="RCP60">
+    <label>RCP 6.0</label>
+    <input class="scenarioInput" type="radio" name="radio-2" value="RCP45">
+    <label>RCP 4.5</label>
+    <input class="scenarioInput" type="radio" name="radio-2" value="RCP26">
+    <label>RCP 2.6</label>
+  </fieldset>
+</fieldset>
+
+<div class='mapContainer'>
+   <div id='title1' class='title'></div>
+   <div id='map1' class='map'></div>
+   <div id='key1' class='key'><img /></div>
+</div>
+
+<div class='mapContainer'>
+   <div id='title2' class='title'></div>
+   <div id='map2' class='map'></div>
+   <div id='key2' class='key'><img /></div>
+</div>
+
+<div class='mapContainer'>
+   <div id='title3' class='title'></div>
+   <div id='map3' class='map'></div>
+   <div id='key3' class='key'><img /></div>
+</div>
+
+<div class='mapContainer'>
+   <div id='title4' class='title'></div>
+   <div id='map4' class='map'></div>
+   <div id='key4' class='key'><img /></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type='text/javascript'>
+
+//===============================================
+var crs = L.CRS.EPSG4326;
+
+var map = [];
+var wmspyferret_var = [];
+var wmspyferret_mask = [];
+var frontiers = [];
+
+var scenarioList = ['RCP85', 'RCP60', 'RCP45', 'RCP26'];
+var variableList = ['D_SST', 'D_PH', 'D_O2', 'D_INTPP'];
+
+var qualifiersList = { 'D_SST': '/lev=(-INF)(-4,4,0.5)(INF)/pal=blue_orange.spk',
+                       'D_PH':  '/lev=(-INF)(-0.5,0.5,0.05)(INF)/pal=brown_green.spk',
+                       'D_O2':  '/lev=(-INF)(-50,50,5)(INF)/pal=darkorange_blue.spk',
+                       'D_INTPP':  '/lev=(-INF)(-200,200,10)(INF)/pal=magenta_green.spk' };
+
+//===============================================
+wmspyferret_var[1] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
+	variable: 'VVVVV_SSSSS[m=1:5@ave]',
+    	crs: crs,
+	format: 'image/png',
+	transparent: true,
+    	uppercase: true
+});
+frontiers[1] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
+	layers: 'GCA:GCA_frontiersCountryAndRegions',
+	format: 'image/png',
+    	crs: crs,
+	transparent: true
+});
+wmspyferret_mask[1] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
+	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
+	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
+    	crs: crs,
+	format: 'image/png',
+	transparent: true,
+    	uppercase: true
+});
+
+map[1] = L.map('map1', {
+    layers: [wmspyferret_var[1], frontiers[1], wmspyferret_mask[1]],
+    crs: crs,
+    center: [0,-40],
+    zoom: 1,
+    attributionControl: false
+});
+
+//===============================================
+wmspyferret_var[2] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
+	variable: 'VVVVV_SSSSS[m=1:5@ave]',
+    	crs: crs,
+	format: 'image/png',
+	transparent: true,
+    	uppercase: true
+});
+frontiers[2] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
+	layers: 'GCA:GCA_frontiersCountryAndRegions',
+	format: 'image/png',
+    	crs: crs,
+	transparent: true
+});
+wmspyferret_mask[2] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
+	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
+	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
+    	crs: crs,
+	format: 'image/png',
+	transparent: true,
+    	uppercase: true
+});
+
+map[2] = L.map('map2', {
+    layers: [wmspyferret_var[2], frontiers[2], wmspyferret_mask[2]],
+    crs: crs,
+    center: [0,-40],
+    zoom: 1,
+    attributionControl: false
+});
+
+//===============================================
+wmspyferret_var[3] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
+	variable: 'VVVVV_SSSSS[m=1:5@ave]',
+    	crs: crs,
+	format: 'image/png',
+	transparent: true,
+    	uppercase: true
+});
+frontiers[3] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
+	layers: 'GCA:GCA_frontiersCountryAndRegions',
+	format: 'image/png',
+    	crs: crs,
+	transparent: true
+});
+wmspyferret_mask[3] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
+	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
+	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
+    	crs: crs,
+	format: 'image/png',
+	transparent: true,
+    	uppercase: true
+});
+
+map[3] = L.map('map3', {
+    layers: [wmspyferret_var[3], frontiers[3], wmspyferret_mask[3]],
+    crs: crs,
+    center: [0,-40],
+    zoom: 1,
+    attributionControl: false
+});
+
+//===============================================
+wmspyferret_var[4] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
+	variable: 'VVVVV_SSSSS[m=1:5@ave]',
+    	crs: crs,
+	format: 'image/png',
+	transparent: true,
+    	uppercase: true
+});
+frontiers[4] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
+	layers: 'GCA:GCA_frontiersCountryAndRegions',
+	format: 'image/png',
+    	crs: crs,
+	transparent: true
+});
+wmspyferret_mask[4] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
+	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
+	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
+    	crs: crs,
+	format: 'image/png',
+	transparent: true,
+    	uppercase: true
+});
+
+map[4] = L.map('map4', {
+    layers: [wmspyferret_var[4], frontiers[4], wmspyferret_mask[4]],
+    crs: crs,
+    center: [0,-40],
+    zoom: 1,
+    attributionControl: false
+});
+
+//===============================================
+// Set up synchro between maps
+map[1].sync(map[2]);
+map[1].sync(map[3]);
+map[1].sync(map[4]);
+map[2].sync(map[1]);
+map[2].sync(map[3]);
+map[2].sync(map[4]);
+map[3].sync(map[1]);
+map[3].sync(map[2]);
+map[3].sync(map[4]);
+map[4].sync(map[1]);
+map[4].sync(map[2]);
+map[4].sync(map[3]);
+
+//===============================================
+for (mapId = 1; mapId <= 4 ; mapId++) { 
+	$('#key'+mapId).children('img').attr('src', 'http://webportals.ipsl.jussieu.fr/gunicorn1/?SERVICE=WMS&REQUEST=GetColorBar' +
+						'&COMMAND=' + wmspyferret_var[mapId].wmsParams.command +
+						'&VARIABLE=' + wmspyferret_var[mapId].wmsParams.variable.replace('+','%2B'));
+}
+
+//===============================================
+$('#dimension').on('change', function() {
+	dimensionToDisplay = $('.dimensionInput:checked').val();
+	variableToDisplay = $('.variableInput:checked').val();
+	scenarioToDisplay = $('.scenarioInput:checked').val();
+
+	$('#dimension').children().children().prop('disabled', true);
+	$('#dimension').children().children().attr('style', 'color: gray');
+	$('#'+dimensionToDisplay).children().prop('disabled', false);
+	$('#'+dimensionToDisplay).children().attr('style', 'color: black');
+
+	for (mapId = 1; mapId <= 4 ; mapId++) { 
+		title = 'VVVVV SSSSS';
+		command = 'shade/x=-180:180/y=-90:90/QQQQQ';
+		variable =  'VVVVV_SSSSS[m=1:5@ave]';
+		mask =  'MASK_VVVVV_SSSSS[m=1:5]';
+		if (dimensionToDisplay == 'variable') {
+			command = command.replace('QQQQQ', qualifiersList[variableToDisplay]);
+			variable = variable.replace('VVVVV', variableToDisplay);
+			variable = variable.replace('SSSSS', scenarioList[mapId-1]);
+			title = title.replace('VVVVV', variableToDisplay);
+			title = title.replace('SSSSS', scenarioList[mapId-1]);
+			mask = mask.replace('VVVVV', variableToDisplay);
+			mask = mask.replace('SSSSS', scenarioList[mapId-1]);
+		} else { 
+			command = command.replace('QQQQQ', qualifiersList[variableList[mapId-1]]);
+			variable = variable.replace('VVVVV', variableList[mapId-1]);
+			variable = variable.replace('SSSSS', scenarioToDisplay);
+			title = title.replace('VVVVV', variableList[mapId-1]);
+			title = title.replace('SSSSS', scenarioToDisplay);
+			mask = mask.replace('VVVVV', variableList[mapId-1]);
+			mask = mask.replace('SSSSS', scenarioToDisplay);
+		}
+        	wmspyferret_var[mapId].setParams({ command: command, variable: variable.replace('+','%2B') });
+        	wmspyferret_mask[mapId].setParams({ variable: mask.replace('+','%2B') });
+		$('#title'+mapId).html(title);
+		$('#key'+mapId).children('img').attr('src', 'http://webportals.ipsl.jussieu.fr/gunicorn1/?SERVICE=WMS&REQUEST=GetColorBar' +
+								'&COMMAND=' + command +
+								'&VARIABLE=' + variable.replace('+','%2B'));
+	}
+
+});
+
+$('#dimension').change();
+
+</script>
+{% endblock %}
+
