@@ -66,9 +66,9 @@ def help():
     return render_template('help.html')
 
 #============================================
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
+@app.route('/contributors')
+def contributors():
+    return render_template('contributors.html')
 
 #============================================
 @app.route('/data')
