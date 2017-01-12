@@ -59,58 +59,54 @@
 
 
 {% block page_content %}
-<fieldset id="dimension" class="userChoices">
-  <legend>Select</legend>
-  <input class="dimensionInput" type="radio" name="radio-0" value="variable" checked>
-  <label>a&nbsp;variable</label>
-  <fieldset id="variable" class="userChoices">
-    <input class="variableInput" type="radio" name="radio-1" value="D_SST" checked>
-    <label>&delta; SST</label>
-    <input class="variableInput" type="radio" name="radio-1" value="D_PH">
-    <label>&delta; pH</label>
-    <input class="variableInput" type="radio" name="radio-1" value="D_O2">
-    <label>&delta; O2</label>
-    <input class="variableInput" type="radio" name="radio-1" value="D_INTPP">
-    <label>&delta; intPP</label>
-  </fieldset>
+	<div class="row">
+    	<h2>Changes in stressor intensity in 2090&ndash;2099 relative to 1990&ndash;1999</h2>
+    	Select a stressor to view its intensity change under all RCP scenarios or select a scenario to view intensity changes of all four stressors.
+    </div>
 
-  <input class="dimensionInput" type="radio" name="radio-0" value="scenario">
-  <label>or&nbsp;a&nbsp;scenario</label>
-  <fieldset id="scenario" class="userChoices">
-    <input class="scenarioInput" type="radio" name="radio-2" value="RCP85" checked>
-    <label>RCP 8.5</label>
-    <input class="scenarioInput" type="radio" name="radio-2" value="RCP60">
-    <label>RCP 6.0</label>
-    <input class="scenarioInput" type="radio" name="radio-2" value="RCP45">
-    <label>RCP 4.5</label>
-    <input class="scenarioInput" type="radio" name="radio-2" value="RCP26">
-    <label>RCP 2.6</label>
-  </fieldset>
-</fieldset>
+	<fieldset id="dimension" class="userChoices">
+	  <legend>Select</legend>
+	  <input class="dimensionInput" type="radio" name="radio-0" value="variable" checked>
+	  <label>a&nbsp;variable</label>
+	  <fieldset id="variable" class="userChoices">
+	    <input class="variableInput" type="radio" name="radio-1" value="D_SST" checked>
+	    <label>&delta; SST</label>
+	    <input class="variableInput" type="radio" name="radio-1" value="D_PH">
+	    <label>&delta; pH</label>
+	    <input class="variableInput" type="radio" name="radio-1" value="D_O2">
+	    <label>&delta; O2</label>
+	    <input class="variableInput" type="radio" name="radio-1" value="D_INTPP">
+	    <label>&delta; intPP</label>
+	  </fieldset>
 
-<div class='mapContainer'>
-   <div id='title1' class='title'></div>
-   <div id='map1' class='map'></div>
-   <div id='key1' class='key'><img /></div>
-</div>
+	  <input class="dimensionInput" type="radio" name="radio-0" value="scenario">
+	  <label>or&nbsp;a&nbsp;scenario</label>
+	  <fieldset id="scenario" class="userChoices">
+	    <input class="scenarioInput" type="radio" name="radio-2" value="RCP85" checked>
+	    <label>RCP 8.5</label>
+	    <input class="scenarioInput" type="radio" name="radio-2" value="RCP60">
+	    <label>RCP 6.0</label>
+	    <input class="scenarioInput" type="radio" name="radio-2" value="RCP45">
+	    <label>RCP 4.5</label>
+	    <input class="scenarioInput" type="radio" name="radio-2" value="RCP26">
+	    <label>RCP 2.6</label>
+	  </fieldset>
+	</fieldset>
 
-<div class='mapContainer'>
-   <div id='title2' class='title'></div>
-   <div id='map2' class='map'></div>
-   <div id='key2' class='key'><img /></div>
-</div>
+<!-- Containers for pre-defined maps -->
+{% for aDict in cmdArray -%}
+	<div class='mapContainer'>
+		<div id='title{{ loop.index }}' class='title'></div>
+	    <div id='map{{ loop.index }}' class='map'></div>
+	    <div id='key{{ loop.index }}' class='key'><img /></div>
+	    <button id='edit{{ loop.index }}' type="button" class="edit btn btn-default btn-xs">Edit palette</button>
+	</div>
+{% endfor %}
 
-<div class='mapContainer'>
-   <div id='title3' class='title'></div>
-   <div id='map3' class='map'></div>
-   <div id='key3' class='key'><img /></div>
-</div>
+<p></p>
+	<div id="timeSeries" class='btn btn-default'>Timeseries</div> Model-mean timeseries for selected stressor relative to  1990&ndash;1999 for all 4 RCP scenarios
+<br><br>
 
-<div class='mapContainer'>
-   <div id='title4' class='title'></div>
-   <div id='map4' class='map'></div>
-   <div id='key4' class='key'><img /></div>
-</div>
 {% endblock %}
 
 {% block scripts %}
@@ -133,152 +129,70 @@ var qualifiersList = { 'D_SST': '/lev=(-INF)(-4,4,0.5)(INF)/pal=blue_orange.spk'
                        'D_O2':  '/lev=(-INF)(-50,50,5)(INF)/pal=darkorange_blue.spk',
                        'D_INTPP':  '/lev=(-INF)(-200,200,10)(INF)/pal=magenta_green.spk' };
 
-//===============================================
-wmspyferret_var[1] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
-	variable: 'VVVVV_SSSSS[m=1:5@ave]',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-frontiers[1] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
-	layers: 'GCA:GCA_frontiersCountryAndRegions',
-	format: 'image/png',
-    	crs: crs,
-	transparent: true
-});
-wmspyferret_mask[1] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
-	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
-	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
+var titleDict = {
+	'D_SST_RCP85': 'Sea surface temperature change (RCP 8.5)',
+	'D_SST_RCP60': 'Sea surface temperature change (RCP 6.0)',
+	'D_SST_RCP45': 'Sea surface temperature change (RCP 4.5)',
+	'D_SST_RCP26': 'Sea surface temperature change (RCP 2.6)',
 
-map[1] = L.map('map1', {
-    layers: [wmspyferret_var[1], frontiers[1], wmspyferret_mask[1]],
-    crs: crs,
-    center: [0,-40],
-    zoom: 1,
-    attributionControl: false
-});
+	'D_PH_RCP85': 'Sea surface pH change (RCP 8.5)',
+	'D_PH_RCP60': 'Sea surface pH change (RCP 6.0)',
+	'D_PH_RCP45': 'Sea surface pH change (RCP 4.5)',
+	'D_PH_RCP26': 'Sea surface pH change (RCP 2.6)',
+
+	'D_O2_RCP85': 'Oxygen concentration change at 200-600m (RCP 8.5)',
+	'D_O2_RCP60': 'Oxygen concentration change at 200-600m (RCP 6.0)',
+	'D_O2_RCP45': 'Oxygen concentration change at 200-600m (RCP 4.5)',
+	'D_O2_RCP26': 'Oxygen concentration change at 200-600m (RCP 2.6)',
+
+	'D_INTPP_RCP85': 'Integrated net primary productivity change (RCP 8.5)',
+	'D_INTPP_RCP60': 'Integrated net primary productivity change (RCP 6.0)',
+	'D_INTPP_RCP45': 'Integrated net primary productivity change (RCP 4.5)',
+	'D_INTPP_RCP26': 'Integrated net primary productivity change (RCP 2.6)'
+};
 
 //===============================================
-wmspyferret_var[2] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
-	variable: 'VVVVV_SSSSS[m=1:5@ave]',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-frontiers[2] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
-	layers: 'GCA:GCA_frontiersCountryAndRegions',
-	format: 'image/png',
-    	crs: crs,
-	transparent: true
-});
-wmspyferret_mask[2] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
-	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
-	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
+{% for aDict in cmdArray -%}
+	wmspyferret_var[{{ loop.index }}] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+		command: 'shade/x=-180:180/y=-90:90/QQQQQ',
+		variable: 'VVVVV_SSSSS[m=1:5@ave]',
+	    	crs: crs,
+		format: 'image/png',
+		transparent: true,
+	    	uppercase: true
+	});
+	frontiers[{{ loop.index }}] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
+		layers: 'GCA:GCA_frontiersCountryAndRegions',
+		format: 'image/png',
+	    	crs: crs,
+		transparent: true
+	});
+	wmspyferret_mask[{{ loop.index }}] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+		command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
+		variable: 'MASK_VVVVV_SSSSS[m=1:5]',
+		mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
+	    	crs: crs,
+		format: 'image/png',
+		transparent: true,
+	    	uppercase: true
+	});
 
-map[2] = L.map('map2', {
-    layers: [wmspyferret_var[2], frontiers[2], wmspyferret_mask[2]],
-    crs: crs,
-    center: [0,-40],
-    zoom: 1,
-    attributionControl: false
-});
+	map[{{ loop.index }}] = L.map('map{{ loop.index }}', {
+	    layers: [wmspyferret_var[{{ loop.index }}], frontiers[{{ loop.index }}], wmspyferret_mask[{{ loop.index }}]],
+	    crs: crs,
+	    center: [0,-40],
+	    zoom: 1,
+	    attributionControl: false
+	});
+	
 
-//===============================================
-wmspyferret_var[3] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
-	variable: 'VVVVV_SSSSS[m=1:5@ave]',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-frontiers[3] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
-	layers: 'GCA:GCA_frontiersCountryAndRegions',
-	format: 'image/png',
-    	crs: crs,
-	transparent: true
-});
-wmspyferret_mask[3] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
-	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
-	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-
-map[3] = L.map('map3', {
-    layers: [wmspyferret_var[3], frontiers[3], wmspyferret_mask[3]],
-    crs: crs,
-    center: [0,-40],
-    zoom: 1,
-    attributionControl: false
-});
-
-//===============================================
-wmspyferret_var[4] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
-	variable: 'VVVVV_SSSSS[m=1:5@ave]',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-frontiers[4] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
-	layers: 'GCA:GCA_frontiersCountryAndRegions',
-	format: 'image/png',
-    	crs: crs,
-	transparent: true
-});
-wmspyferret_mask[4] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
-	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
-	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-
-map[4] = L.map('map4', {
-    layers: [wmspyferret_var[4], frontiers[4], wmspyferret_mask[4]],
-    crs: crs,
-    center: [0,-40],
-    zoom: 1,
-    attributionControl: false
-});
+{% endfor %}
 
 //===============================================
 // Set up synchro between maps
-map[1].sync(map[2]);
-map[1].sync(map[3]);
-map[1].sync(map[4]);
-map[2].sync(map[1]);
-map[2].sync(map[3]);
-map[2].sync(map[4]);
-map[3].sync(map[1]);
-map[3].sync(map[2]);
-map[3].sync(map[4]);
-map[4].sync(map[1]);
-map[4].sync(map[2]);
-map[4].sync(map[3]);
+{% for synchro in listSynchroMapsToSet %}
+	map[{{ synchro[0] }}].sync(map[{{ synchro[1] }}]);
+{% endfor %}	
 
 //===============================================
 for (mapId = 1; mapId <= 4 ; mapId++) { 
@@ -304,6 +218,7 @@ $('#dimension').on('change', function() {
 		variable =  'VVVVV_SSSSS[m=1:5@ave]';
 		mask =  'MASK_VVVVV_SSSSS[m=1:5]';
 		if (dimensionToDisplay == 'variable') {
+			$('#timeSeries').attr('disabled', false);
 			command = command.replace('QQQQQ', qualifiersList[variableToDisplay]);
 			variable = variable.replace('VVVVV', variableToDisplay);
 			variable = variable.replace('SSSSS', scenarioList[mapId-1]);
@@ -311,7 +226,8 @@ $('#dimension').on('change', function() {
 			title = title.replace('SSSSS', scenarioList[mapId-1]);
 			mask = mask.replace('VVVVV', variableToDisplay);
 			mask = mask.replace('SSSSS', scenarioList[mapId-1]);
-		} else { 
+		} else {
+			$('#timeSeries').attr('disabled', true);
 			command = command.replace('QQQQQ', qualifiersList[variableList[mapId-1]]);
 			variable = variable.replace('VVVVV', variableList[mapId-1]);
 			variable = variable.replace('SSSSS', scenarioToDisplay);
@@ -331,6 +247,53 @@ $('#dimension').on('change', function() {
 });
 
 $('#dimension').change();
+
+//===============================================
+// Display timeseries in dialogs
+n=1;
+$("#timeSeries").click(function(){
+	// Get map boundaries
+	xlim1 = map[1].getBounds().getEast().toFixed(2);
+    xlim2 = map[1].getBounds().getWest().toFixed(2);
+    ylim1 = Math.max(-90, map[1].getBounds().getSouth().toFixed(2));
+    ylim2 = Math.min(map[1].getBounds().getNorth().toFixed(2), 90);
+
+    xtrans = xlim1.toString() + ":" + xlim2.toString();
+	ytrans = ylim1.toString() + ":" + ylim2.toString();
+
+    // Determine which variables to plot
+    dimensionToDisplay = $('.dimensionInput:checked').val();
+	variableToDisplay = $('.variableInput:checked').val();
+	scenarioToDisplay = $('.scenarioInput:checked').val();
+
+	if (dimensionToDisplay == 'variable') {
+		stressor = $('.variableInput:checked').val();
+	}
+	
+    $.ajax({
+       	url: '/timeseries?REQUEST=calcTimeseries&XTRANS=' + xtrans + '&YTRANS=' + ytrans + '&VAR=' + stressor,
+       	data: {	"VAR": "THETAO"
+		},
+       	type: "GET",
+       	cache: false,
+       	dataType: 'html',
+       	success: function(data) {
+
+    		$('body').append("<div id='ts"+n+"'>" + data + "</div>");
+
+            $('#ts'+n).dialog({
+                    title: "Time Series #" + n + " Avg " + stressor +   " over zone [X=" + xlim1 + ":" + xlim2 + ", Y=" + ylim1 + ":" + ylim2 + "]",
+                    width: 800
+            });
+
+    		n++;
+       	},
+       	error: function() {
+               console.log("error");
+       	},
+   	});
+
+});
 
 </script>
 {% endblock %}
