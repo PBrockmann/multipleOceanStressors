@@ -53,18 +53,26 @@
 	fieldset label {   
 		font-weight: normal;
 		padding-right: 5px;
-	} 
+	}  
 	#timeSeries {
 		position: relative;
 		left: 5px;
+	} 
+	#mainTitle {
+		font-weight: bold;
+		position: relative;
+		left: 190px;
+		padding-bottom: 15px;
 	} 
     </style>
 {% endblock %}
 
 
 {% block page_content %}
+
 <fieldset id="dimension" class="userChoices">
-  <legend>Select</legend>
+  <legend title="Select a stressor to view its intensity change under all RCP scenarios 
+or select a scenario to view intensity changes of all four stressors.">Select</legend>
   <input class="dimensionInput" type="radio" name="radio-0" value="variable" checked>
   <label>a&nbsp;variable</label>
   <fieldset id="variable" class="userChoices">
@@ -92,36 +100,26 @@
   </fieldset>
 </fieldset>
 
-<br>
-<div class='mapContainer'>
-   <div id='title1' class='title'></div>
-   <div id='map1' class='map'></div>
-   <div id='key1' class='key'><img /></div>
+<br><br><br>
+
+<div id="toPrint">
+
+<div id="mainTitle">
+Changes in stressor intensity in 2090&ndash;2099 relative to 1990&ndash;1999
 </div>
 
+{% for aDict in cmdArray -%}
 <div class='mapContainer'>
-   <div id='title2' class='title'></div>
-   <div id='map2' class='map'></div>
-   <div id='key2' class='key'><img /></div>
+   <div id='title{{ loop.index }}' class='title'></div>
+   <div id='map{{ loop.index }}' class='map'></div>
+   <div id='key{{ loop.index }}' class='key'><img /></div>
 </div>
+{% endfor -%}
 
-<div class='mapContainer'>
-   <div id='title3' class='title'></div>
-   <div id='map3' class='map'></div>
-   <div id='key3' class='key'><img /></div>
-</div>
-
-<div class='mapContainer'>
-   <div id='title4' class='title'></div>
-   <div id='map4' class='map'></div>
-   <div id='key4' class='key'><img /></div>
 </div>
 
 <br>
-<br>
-<button id="timeSeries">Display time series</button>
-<br>
-<br>
+<button id="timeSeries">Time series</button>
 {% endblock %}
 
 {% block scripts %}
@@ -144,159 +142,46 @@ var qualifiersList = { 'D_SST': '/lev=(-INF)(-4,4,0.5)(INF)/pal=blue_orange.spk'
                        'D_O2':  '/lev=(-INF)(-50,50,5)(INF)/pal=darkorange_blue.spk',
                        'D_INTPP':  '/lev=(-INF)(-200,200,10)(INF)/pal=magenta_green.spk' };
 
+{% for aDict in cmdArray -%}
 //===============================================
-wmspyferret_var[1] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
-	variable: 'VVVVV_SSSSS[m=1:5@ave]',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
+wmspyferret_var[{{ loop.index }}] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+        command: '{{ aDict.command }}',
+        variable: '{{ aDict.variable }}',
+        crs: crs,
+        format: 'image/png',
+        transparent: true,
+        uppercase: true
 });
-frontiers[1] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
-	layers: 'GCA:GCA_frontiersCountryAndRegions',
-	format: 'image/png',
-    	crs: crs,
-	transparent: true
+frontiers[{{ loop.index }}] = L.tileLayer.wms('http://www.globalcarbonatlas.org:8080/geoserver/GCA/wms', {
+        layers: 'GCA:GCA_frontiersCountryAndRegions',
+        format: 'image/png',
+        crs: crs,
+        transparent: true
 });
-wmspyferret_mask[1] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
+wmspyferret_mask[{{ loop.index }}] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
 	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
 	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
 	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
-    	crs: crs,
+	crs: crs,
 	format: 'image/png',
 	transparent: true,
-    	uppercase: true
+	uppercase: true
 });
 
-map[1] = L.map('map1', {
-    layers: [wmspyferret_var[1], frontiers[1], wmspyferret_mask[1]],
+map[{{ loop.index }}] = L.map('map{{ loop.index }}', {
+    layers: [wmspyferret_var[{{ loop.index }}], frontiers[{{ loop.index }}], wmspyferret_mask[{{ loop.index }}]],
     crs: crs,
     center: [0,-40],
     zoom: 1,
     attributionControl: false
 });
-
-//===============================================
-wmspyferret_var[2] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
-	variable: 'VVVVV_SSSSS[m=1:5@ave]',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-frontiers[2] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
-	layers: 'GCA:GCA_frontiersCountryAndRegions',
-	format: 'image/png',
-    	crs: crs,
-	transparent: true
-});
-wmspyferret_mask[2] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
-	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
-	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-
-map[2] = L.map('map2', {
-    layers: [wmspyferret_var[2], frontiers[2], wmspyferret_mask[2]],
-    crs: crs,
-    center: [0,-40],
-    zoom: 1,
-    attributionControl: false
-});
-
-//===============================================
-wmspyferret_var[3] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
-	variable: 'VVVVV_SSSSS[m=1:5@ave]',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-frontiers[3] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
-	layers: 'GCA:GCA_frontiersCountryAndRegions',
-	format: 'image/png',
-    	crs: crs,
-	transparent: true
-});
-wmspyferret_mask[3] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
-	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
-	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-
-map[3] = L.map('map3', {
-    layers: [wmspyferret_var[3], frontiers[3], wmspyferret_mask[3]],
-    crs: crs,
-    center: [0,-40],
-    zoom: 1,
-    attributionControl: false
-});
-
-//===============================================
-wmspyferret_var[4] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/QQQQQ',
-	variable: 'VVVVV_SSSSS[m=1:5@ave]',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-frontiers[4] = L.tileLayer.wms('http://www.globalcarbonatlas.org/geoserver/GCA/wms', {
-	layers: 'GCA:GCA_frontiersCountryAndRegions',
-	format: 'image/png',
-    	crs: crs,
-	transparent: true
-});
-wmspyferret_mask[4] = L.tileLayer.wms('http://webportals.ipsl.jussieu.fr/gunicorn1', {
-	command: 'shade/x=-180:180/y=-90:90/pal=gray/lev=(1)',
-	variable: 'MASK_VVVVV_SSSSS[m=1:5]',
-	mask: '/var/www/html/ScientificApps/dev/forge_patrick/wms-pyferret/square.png',
-    	crs: crs,
-	format: 'image/png',
-	transparent: true,
-    	uppercase: true
-});
-
-map[4] = L.map('map4', {
-    layers: [wmspyferret_var[4], frontiers[4], wmspyferret_mask[4]],
-    crs: crs,
-    center: [0,-40],
-    zoom: 1,
-    attributionControl: false
-});
+{% endfor %}
 
 //===============================================
 // Set up synchro between maps
-map[1].sync(map[2]);
-map[1].sync(map[3]);
-map[1].sync(map[4]);
-map[2].sync(map[1]);
-map[2].sync(map[3]);
-map[2].sync(map[4]);
-map[3].sync(map[1]);
-map[3].sync(map[2]);
-map[3].sync(map[4]);
-map[4].sync(map[1]);
-map[4].sync(map[2]);
-map[4].sync(map[3]);
-
-//===============================================
-for (mapId = 1; mapId <= 4 ; mapId++) { 
-	$('#key'+mapId).children('img').attr('src', 'http://webportals.ipsl.jussieu.fr/gunicorn1/?SERVICE=WMS&REQUEST=GetColorBar' +
-						'&COMMAND=' + wmspyferret_var[mapId].wmsParams.command +
-						'&VARIABLE=' + wmspyferret_var[mapId].wmsParams.variable.replace('+','%2B'));
-}
+{% for synchro in listSynchroMapsToSet -%}
+map[{{ synchro[0] }}].sync(map[{{ synchro[1] }}]);
+{% endfor %}
 
 //===============================================
 $('#dimension').on('change', function() {
@@ -309,7 +194,7 @@ $('#dimension').on('change', function() {
 	$('#'+dimensionToDisplay).children().prop('disabled', false);
 	$('#'+dimensionToDisplay).children().attr('style', 'color: black');
 
-	for (mapId = 1; mapId <= 4 ; mapId++) { 
+	for (mapId = 1; mapId <= {{ nbMaps }} ; mapId++) { 
 		title = 'VVVVV SSSSS';
 		command = 'shade/x=-180:180/y=-90:90/QQQQQ';
 		variable =  'VVVVV_SSSSS[m=1:5@ave]';
@@ -331,16 +216,57 @@ $('#dimension').on('change', function() {
 			mask = mask.replace('VVVVV', variableList[mapId-1]);
 			mask = mask.replace('SSSSS', scenarioToDisplay);
 		}
-        	wmspyferret_var[mapId].setParams({ command: command, variable: variable.replace('+','%2B') });
-        	wmspyferret_mask[mapId].setParams({ variable: mask.replace('+','%2B') });
+        	wmspyferret_var[mapId].setParams({ command: command, variable: variable });
+        	wmspyferret_mask[mapId].setParams({ variable: mask });
 		$('#title'+mapId).html(title);
 		$('#key'+mapId).children('img').attr('src', 'http://webportals.ipsl.jussieu.fr/gunicorn1/?SERVICE=WMS&REQUEST=GetColorBar' +
 								'&COMMAND=' + command +
-								'&VARIABLE=' + variable.replace('+','%2B'));
+								'&VARIABLE=' + variable);
 	}
 
 });
 
+//===============================================
+n=1;
+$('#timeSeries').on('click', function() {
+    console.log("here");
+
+    xlim1 = map[1].getBounds().getEast().toFixed(2);
+    xlim2 = map[1].getBounds().getWest().toFixed(2);
+    ylim1 = Math.max(-90, map[1].getBounds().getSouth().toFixed(2));
+    ylim2 = Math.min(map[1].getBounds().getNorth().toFixed(2), 90);
+    console.log(xlim1,xlim2);
+    console.log(ylim1,ylim2);
+
+   $.ajax({
+       url: "/timeSeries",
+       data: {	"VAR": "THETAO",
+		"XLIM": xlim1 + ":" + xlim2, 
+             	"YLIM": ylim1 + ":" + ylim2},
+       type: "GET",
+       cache: false,
+       dataType: 'html',
+       success: function(data) {
+               console.log("success");
+               console.log(data);
+
+    		$('body').append("<div id='ts"+n+"'>" + data + "</div>");
+
+                   $('#ts'+n).dialog({
+                        title: "Time Series #" + n + "   (X=" + xlim1 + ":" + xlim2 + "@ave, Y=" + ylim1 + ":" + ylim2 + "@ave)",
+                        width: 640
+                   });
+    		n++;
+       		},
+       error: function() {
+               console.log("error");
+       },
+   });
+
+});
+
+
+//===============================================
 $('#dimension').change();
 
 </script>
