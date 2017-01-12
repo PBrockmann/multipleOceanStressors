@@ -18,7 +18,6 @@ import subprocess
 
 from jinja2 import Template
 import itertools
-from PIL import Image
 
 from flask import Flask, render_template, make_response, request, Response, session, url_for
 from flask_script import Manager
