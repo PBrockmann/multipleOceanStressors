@@ -57,13 +57,12 @@ def dataTest():
 def wmspyferret():
 
     fields = request.args
-
     try:
             if fields['SERVICE'] != 'WMS':
                     raise
 
             COMMAND = fields['COMMAND']
-            VARIABLE = fields['VARIABLE'].replace('%2B','+')
+            VARIABLE = fields['VARIABLE']
 
             pyferret.run('go envScript.jnl')
 
@@ -121,16 +120,39 @@ def wmspyferret():
                     ftmp.close()
                     os.remove(tmpdir + '/' + tmpname)
 
-	    resp = Response(iter(img), status=200, mimetype='image/png')
-	    return resp
+	    return Response(iter(img), status=200, mimetype='image/png')
 
     except Exception, e:
 	    return(str(e)) 
 
 #--------------------------------------------------------------
-@app.route('/timeSeries')
-def timeSeries():
+@app.route('/timeSeriesDisplay')
+def timeSeriesDisplay():
     return 1
+
+#--------------------------------------------------------------
+@app.route('/timeSeriesDownload')
+def timeSeriesDownload():
+
+    try:
+	fname = request.args.get('FILENAME')
+
+	ftmp = open(tmpdir + '/' + fname, 'rb')
+	ts_csv = ftmp.read()
+	ftmp.close()
+
+	@after_this_request
+	def remove_file(response):
+		try:
+			os.remove(tmpdir + "/" + fname)
+		except Exception as error:
+			app.logger.error("Error removing or closing downloaded file handle", error)
+	return response
+
+	return Response(iter(ts_csv), mimetype="text/csv")
+
+    except Exception, e:
+	    return(str(e)) 
 
 #--------------------------------------------------------------
 @app.route('/help')
