@@ -195,6 +195,10 @@ map[{{ loop.index }}] = L.map('map{{ loop.index }}', {
     zoom: 1,
     attributionControl: false
 });
+
+// If needed control can be added with 
+//L.control.layers({}, {"Sign": wmspyferret_mask[{{ loop.index }}]}).addTo(map[{{ loop.index }}]);
+
 {% endfor %}
 
 //===============================================
@@ -281,19 +285,30 @@ $('#timeSeries').on('click', function() {
 });
 
 //===============================================
+{% for aDict in cmdArray -%}
+wmspyferret_mask[{{ loop.index }}].setOpacity(0);
+{% endfor %}
+
 $('#toggleStippling').bootstrapToggle({
-      off: 'Display stippling',
-      on: 'Hide stipping',
+      on: 'Stippling on',
+      off: 'Stippling off',
       width: 150
 });
+$('#toggle-demo').bootstrapToggle('off')
 
-$('#toggleStippling').on('change', function() {
-      console.log(map[1]);
+$('#toggleStippling').change(function() {
+      if ($(this).prop('checked')) { opacity=1 }  else  { opacity=0 }; 
+{% for aDict in cmdArray -%}
+      wmspyferret_mask[{{ loop.index }}].setOpacity(opacity);
+{% endfor %}
 });
+
 
 //===============================================
 $('#dimension').change();
 
 </script>
 {% endblock %}
+
+
 
