@@ -188,7 +188,7 @@ def timeSeriesDisplay():
 
 	script, div = components(plot1)
 
-	buttonString = '<a href="/download?FILENAME=' + tmpname + '"><button class="btn btn-default">Download</button></a>'
+	buttonString = '<a href="/timeSeriesDownload?FILENAME=' + tmpname + '"><button class="btn btn-default">Download</button></a>'
 
 	return Response(iter(script + div + buttonString), mimetype="text/html")
 

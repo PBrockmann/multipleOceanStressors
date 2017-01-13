@@ -4,10 +4,14 @@
 
 {% block head %}
 {{ super() }}
-    <link rel='stylesheet' href="{{ url_for('static', filename = 'leaflet.css') }}" />
-    <script src="{{ url_for('static', filename = 'leaflet.js') }}"></script>
-
-    <script src="{{ url_for('static', filename = 'L.Map.Sync.js') }}"></script>
+    <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/leaflet.css') }}" />
+    <script src="{{ url_for('static', filename = 'lib/leaflet.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'lib/L.Map.Sync.js') }}"></script>
+    <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/jquery-ui.min.css') }}" />
+    <script src="{{ url_for('static', filename = 'lib/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename = 'lib/jquery-ui.min.js') }}"></script>
+    <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/bokeh-0.12.3.min.css') }}" />
+    <script src="{{ url_for('static', filename = 'lib/bokeh-0.12.3.min.js') }}"></script>
 {% endblock %}
 
 
