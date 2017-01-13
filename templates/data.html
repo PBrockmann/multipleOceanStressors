@@ -7,6 +7,8 @@
     <script src="{{ url_for('static', filename = 'lib/L.Map.Sync.js') }}"></script>
     <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/bokeh-0.12.3.min.css') }}" />
     <script src="{{ url_for('static', filename = 'lib/bokeh-0.12.3.min.js') }}"></script>
+    <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/bootstrap-toggle.min.css') }}" />
+    <script src="{{ url_for('static', filename = 'lib/bootstrap-toggle.min.js') }}"></script>
 
     <style type='text/css'>
         .mapContainer { display: inline-block; margin-left: 10px; margin-top: 10px;}
@@ -61,7 +63,10 @@
 	}
         .ui-dialog { 
 		z-index: 1000; 
-	} 
+	}
+	#toggleStippling {
+		width: 150px;
+	}
     </style>
 {% endblock %}
 
@@ -97,6 +102,8 @@ or select a scenario to view intensity changes of all four stressors.">Select</l
     <label>RCP 2.6</label>
   </fieldset>
 </fieldset>
+<br><br>
+<input id="toggleStippling" type="checkbox">
 
 <br><br><br>
 
@@ -256,8 +263,7 @@ $('#timeSeries').on('click', function() {
        cache: false,
        dataType: 'html',
        success: function(data) {
-               		console.log("success");
-               		console.log(data);
+               		//console.log(data);
 
     			$('body').append("<div id='ts"+n+"'>" + data + "</div>");
 
@@ -272,6 +278,17 @@ $('#timeSeries').on('click', function() {
        },
    });
 
+});
+
+//===============================================
+$('#toggleStippling').bootstrapToggle({
+      off: 'Display stippling',
+      on: 'Hide stipping',
+      width: 150
+});
+
+$('#toggleStippling').on('change', function() {
+      console.log(map[1]);
 });
 
 //===============================================

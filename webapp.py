@@ -184,9 +184,10 @@ def timeSeriesDisplay():
 
 	script, div = components(plot1)
 
-	buttonString = '<a href="/timeSeriesDownload?FILENAME=' + tmpname + '"><button class="btn btn-default">Download</button></a>'
+	downloadButtonString = '<a href="/timeSeriesDownload?FILENAME=' + tmpname + '"><button class="btn btn-default">Download</button></a>'
+	closeButtonString = '<a href="/timeSeriesClose?FILENAME=' + tmpname + '"><button class="btn btn-default">Close</button></a>'
 
-	return Response(iter(script + div + buttonString), mimetype="text/html")
+	return Response(iter(script + div + downloadButtonString + closeButtonString), mimetype="text/html")
 
     except Exception, e:
 	return(str(e)) 
@@ -203,16 +204,23 @@ def timeSeriesDownload():
 	ftmp = open(tmpdir + '/' + fname, 'rb')
 	ts_csv = ftmp.read()
 	ftmp.close()
-
-	@after_this_request
-	def remove_file(response):
-		try:
-			os.remove(tmpdir + "/" + fname)
-		except Exception as error:
-			app.logger.error("Error removing or closing downloaded file handle", error)
-	return response
+	os.remove(tmpdir + "/" + fname)
 
 	return Response(iter(ts_csv), mimetype="text/csv")
+
+    except Exception, e:
+	return(str(e)) 
+
+#--------------------------------------------------------------
+@app.route('/timeSeriesClose')
+def timeSeriesClose():
+
+    fields = request.args
+    try:
+	fname = fields['FILENAME']
+	os.remove(tmpdir + "/" + fname)
+
+	return Response(iter("Temporary file removed"), status=200, mimetype='txt/html')
 
     except Exception, e:
 	return(str(e)) 
@@ -239,7 +247,7 @@ class myArbiter(gunicorn.arbiter.Arbiter):
         pyferret.stop()
 
         print('Removing temporary directory: ', tmpdir)
-        #shutil.rmtree(tmpdir)
+        shutil.rmtree(tmpdir)
 
         super(myArbiter, self).halt()
 
