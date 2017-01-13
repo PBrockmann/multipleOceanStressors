@@ -8,7 +8,6 @@ import gunicorn.app.base
 from gunicorn.six import iteritems
 
 from flask import Flask, render_template, request, Response
-from flask_bootstrap import Bootstrap
 
 import os, sys
 import shutil
@@ -28,7 +27,6 @@ from bokeh.embed import components
 
 #==============================================================
 app = Flask(__name__)
-bootstrap = Bootstrap(app)
 
 #--------------------------------------------------------------
 @app.errorhandler(404)

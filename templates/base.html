@@ -1,15 +1,21 @@
-{% extends "bootstrap/base.html" %}
+<html>
 
-{% block title %}Ocean Stressors{% endblock %}
-
+<head>
 {% block head %}
-{{ super() }}
+<title>Ocean Stressors</title>
+<script src="{{ url_for('static', filename = 'lib/jquery.min.js') }}"></script>
+<link href="{{ url_for('static', filename = 'lib/jquery-ui.min.css') }}" rel="stylesheet"/>
+<script src="{{ url_for('static', filename = 'lib/jquery-ui.min.js') }}"></script>
+<link href="{{ url_for('static', filename = 'lib/bootstrap.min.css') }}" rel="stylesheet">
+<script src="{{ url_for('static', filename = 'lib/bootstrap.min.js') }}"></script>
 <link href="{{ url_for('static', filename = 'lib/sticky-footer-navbar.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename = 'lib/pace-theme-loading-bar.min.css') }}" rel="stylesheet">
 <script src="{{ url_for('static', filename = 'lib/pace.min.js') }}"></script>
 {% endblock %}
+</head>
 
-{% block navbar %}
+<body>
+{% block content %}
 <div class="navbar navbar-default" role="navigation">
     <div class="container">
         <div class="navbar-header">
@@ -30,17 +36,18 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block content %}
 <div class="container">
     {% block page_content %}{% endblock %}
 </div>
 
 <footer class="footer">
        <div class="container">
-		<p class="text-muted credit">Created by <a target="_blank" href="http://www.lsce.ipsl.fr/en"><span title="Climate and Environment Sciences Laboratory" style="font-weight:bold;">LSCE</span></a>&nbsp;<a target="_blank" href="http://www.lsce.ipsl.fr/en"><img src="{{ url_for('static', filename = 'images/LSCE_Icon.png') }}" title="Climate and Environment Sciences Laboratory"/></a> and hosted by <a target="_blank" href="http://www.ipsl.fr/en"><span title="Institut Pierre Simon Laplace" style="font-weight:bold;">IPSL</span></a>&nbsp;<a target="_blank" href="http://www.ipsl.fr/en"><img src="{{ url_for('static', filename = 'images/IPSL_logo.png') }}" title="Institut Pierre Simon Laplace"/></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Version 0.5 - 2017/01/12</p>
+		<p class="text-muted credit">Created by <a target="_blank" href="http://www.lsce.ipsl.fr/en"><span title="Climate and Environment Sciences Laboratory" style="font-weight:bold;">LSCE</span></a>&nbsp;<a target="_blank" href="http://www.lsce.ipsl.fr/en"><img src="{{ url_for('static', filename = 'images/LSCE_Icon.png') }}" title="Climate and Environment Sciences Laboratory"/></a> and hosted by <a target="_blank" href="http://www.ipsl.fr/en"><span title="Institut Pierre Simon Laplace" style="font-weight:bold;">IPSL</span></a>&nbsp;<a target="_blank" href="http://www.ipsl.fr/en"><img src="{{ url_for('static', filename = 'images/IPSL_logo.png') }}" title="Institut Pierre Simon Laplace"/></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Version 0.6 - 2017/01/12</p>
       </div>
 </footer>
 
 {% endblock %}
+
+</body>
+</html>

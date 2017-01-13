@@ -1,18 +1,11 @@
 {% extends "base.html" %}
 
-{% block title %}Ocean Stressors{% endblock %}
-
 {% block head %}
 {{ super() }}
     <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/leaflet.css') }}" />
     <script src="{{ url_for('static', filename = 'lib/leaflet.js') }}"></script>
-
     <script src="{{ url_for('static', filename = 'lib/L.Map.Sync.js') }}"></script>
-{% endblock %}
 
-
-{% block styles %}
-{{ super() }}
     <style type='text/css'>
         .mapContainer { display: inline-block; margin-left: 10px; margin-top: 10px;}
         .title { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
@@ -31,7 +24,6 @@
     </style>
 {% endblock %}
 
-
 {% block page_content %}
 <div class='mapContainer'>
    <div id='title1' class='title'></div>
@@ -45,10 +37,6 @@
    <div id='key2' class='key'><img /></div>
 </div>
 
-{% endblock %}
-
-{% block scripts %}
-{{ super() }}
 <script type='text/javascript'>
 
 //===============================================
