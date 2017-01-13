@@ -119,7 +119,7 @@ Changes in stressor intensity in 2090&ndash;2099 relative to 1990&ndash;1999
 </div>
 
 <br>
-<button id="timeSeries">Time series</button>
+<button id="timeSeries" class="btn btn-default">Time series</button>
 {% endblock %}
 
 {% block scripts %}
@@ -244,34 +244,33 @@ $('#dimension').on('change', function() {
 //===============================================
 n=1;
 $('#timeSeries').on('click', function() {
-    console.log("here");
 
     xlim1 = map[1].getBounds().getEast().toFixed(2);
     xlim2 = map[1].getBounds().getWest().toFixed(2);
     ylim1 = Math.max(-90, map[1].getBounds().getSouth().toFixed(2));
     ylim2 = Math.min(map[1].getBounds().getNorth().toFixed(2), 90);
-    console.log(xlim1,xlim2);
-    console.log(ylim1,ylim2);
+    //console.log(xlim1,xlim2);
+    //console.log(ylim1,ylim2);
 
    $.ajax({
-       url: "/timeSeries",
-       data: {	"VAR": "THETAO",
+       url: "/timeSeriesDisplay",
+       data: {	"VAR": "THETAO",		// to replace by current variable
 		"XLIM": xlim1 + ":" + xlim2, 
              	"YLIM": ylim1 + ":" + ylim2},
        type: "GET",
        cache: false,
        dataType: 'html',
        success: function(data) {
-               console.log("success");
-               console.log(data);
+               		console.log("success");
+               		console.log(data);
 
-    		$('body').append("<div id='ts"+n+"'>" + data + "</div>");
+    			$('body').append("<div id='ts"+n+"'>" + data + "</div>");
 
-                   $('#ts'+n).dialog({
-                        title: "Time Series #" + n + "   (X=" + xlim1 + ":" + xlim2 + "@ave, Y=" + ylim1 + ":" + ylim2 + "@ave)",
-                        width: 640
-                   });
-    		n++;
+                   	$('#ts'+n).dialog({
+                        	title: "Time Series #" + n + "   (X=" + xlim1 + ":" + xlim2 + "@ave, Y=" + ylim1 + ":" + ylim2 + "@ave)",
+                        	width: 640
+                   	});
+    			n++;
        		},
        error: function() {
                console.log("error");
@@ -279,7 +278,6 @@ $('#timeSeries').on('click', function() {
    });
 
 });
-
 
 //===============================================
 $('#dimension').change();
