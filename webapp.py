@@ -152,8 +152,6 @@ def timeSeriesDisplay():
 	pyferret.run("spawn echo 'date,'" + VAR + " > " + tmpdir + '/' + tmpname)
 	pyferret.run("list/quiet/nohead/norowlab/precision=7/format=\"comma\"/file=\"" + tmpdir + '/' + tmpname + "\"/append TAX_DATESTRING(t[g=var],var,\"mon\"), var")
 
-	os.environ[ 'MPLCONFIGDIR' ] = '/tmp/' 		# useful ??
-
 	df = pd.read_csv(tmpdir + '/' + tmpname)
 
 	df['date'] = pd.to_datetime(df['date'], format='%b-%Y')  # convert ferret dates as datetimes 
