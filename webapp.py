@@ -185,9 +185,8 @@ def timeSeriesDisplay():
 	script, div = components(plot1)
 
 	downloadButtonString = '<a href="/timeSeriesDownload?FILENAME=' + tmpname + '"><button class="btn btn-default">Download</button></a>'
-	closeButtonString = '<a href="/timeSeriesClose?FILENAME=' + tmpname + '"><button class="btn btn-default">Close</button></a>'
 
-	return Response(iter(script + div + downloadButtonString + closeButtonString), mimetype="text/html")
+	return Response(iter(script + div + downloadButtonString), mimetype="text/html")
 
     except Exception, e:
 	return(str(e)) 
@@ -204,7 +203,6 @@ def timeSeriesDownload():
 	ftmp = open(tmpdir + '/' + fname, 'rb')
 	ts_csv = ftmp.read()
 	ftmp.close()
-	os.remove(tmpdir + "/" + fname)
 
 	return Response(iter(ts_csv), mimetype="text/csv")
 
@@ -213,14 +211,14 @@ def timeSeriesDownload():
 
 #--------------------------------------------------------------
 @app.route('/timeSeriesClose')
-def timeSeriesClose():
+def timeSeriesClose():			# should be triggered somehow by the $("#ts"+n).on("dialogclose",function() {}
 
     fields = request.args
     try:
 	fname = fields['FILENAME']
 	os.remove(tmpdir + "/" + fname)
 
-	return Response(iter("Temporary file removed"), status=200, mimetype='txt/html')
+	return
 
     except Exception, e:
 	return(str(e)) 

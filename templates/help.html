@@ -22,8 +22,14 @@ Novitates autem si spem adferunt, ut tamquam in herbis non fallacibus fructus ap
 <script type='text/javascript'>
 $("#tyty").on('click', function() {
     console.log("here"); 
-    $("#dialog").dialog();
+    $( "#dialog" ).dialog();
 });
+
+
+$("#dialog").on("dialogclose",function() {
+	console.log("I close the dialog"); 
+});
+
 </script>
 
 {% endblock %}
