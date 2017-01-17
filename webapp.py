@@ -226,6 +226,11 @@ def timeSeriesClose():			# should be triggered somehow by the $("#ts"+n).on("dia
 	return(str(e)) 
 
 #--------------------------------------------------------------
+@app.route('/notebooks')
+def notebooks():
+    return render_template('notebooks.html')
+
+#--------------------------------------------------------------
 @app.route('/help')
 def help():
     return render_template('help.html')
