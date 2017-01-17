@@ -290,7 +290,7 @@ $('#timeSeries').on('click', function() {
 });
 
 //===============================================
-$(document).on('click', '.ts_close', function() {
+$(document).on('click', '.ts_close', function() {			// element are created on the fly so need to listen events on document
 	//console.log($(this).parent().parent());
 	if ($(this).parent().parent().data("ui-dialog")) {		// parent().parent() because call is made from <a><button class="ts_close"></button></a> 
 		//console.log("Closing ts dialog");

@@ -186,7 +186,6 @@ def timeSeriesDisplay():
 
 	downloadButtonString = '<a href="/timeSeriesDownload?FILENAME=' + tmpname + '"><button class="btn btn-default">Download</button></a>'
 	closeButtonString = '<a href="/timeSeriesClose?FILENAME=' + tmpname + '"><button class="btn btn-default ts_close">Close</button></a>'
-	#closeButtonString = '<button class="btn btn-default ts_close">Close</button>'
 
 	return Response(iter(bk_script + bk_div + downloadButtonString + closeButtonString), mimetype="text/html")
 
