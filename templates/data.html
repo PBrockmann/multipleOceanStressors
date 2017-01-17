@@ -70,6 +70,10 @@
 	#toggleStippling {
 		width: 150px;
 	}
+	button {
+		margin-top: 20px;
+		margin-right : 10px;
+	}
     </style>
 {% endblock %}
 
@@ -287,11 +291,10 @@ $('#timeSeries').on('click', function() {
 
 //===============================================
 $(document).on('click', '.ts_close', function() {
-	console.log("Closing ts dialog");
-	console.log($(this).parent());
-	if ($(this).parent().data("ui-dialog")) {
-		console.log("---> in");
-        	$(this).parent().dialog('close');
+	//console.log($(this).parent().parent());
+	if ($(this).parent().parent().data("ui-dialog")) {		// parent().parent() because call is made from <a><button class="ts_close"></button></a> 
+		//console.log("Closing ts dialog");
+        	$(this).parent().parent().dialog('close');
 	}
 });
 
