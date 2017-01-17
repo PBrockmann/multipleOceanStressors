@@ -64,6 +64,9 @@
         .ui-dialog { 
 		z-index: 1000; 
 	}
+	.ui-dialog-titlebar-close{
+    		display: none;
+	}
 	#toggleStippling {
 		width: 150px;
 	}
@@ -110,7 +113,7 @@ or select a scenario to view intensity changes of all four stressors.">Select</l
 <div id="toPrint">
 
 <div id="mainTitle">
-Changes in stressor intensity in 2090&ndash;2099 relative to 1990&ndash;1999
+Changes in stressor intensity in 2090-2099 relative to 1990-1999
 </div>
 
 {% for aDict in cmdArray -%}
@@ -268,9 +271,7 @@ $('#timeSeries').on('click', function() {
        dataType: 'html',
        success: function(data) {
                		//console.log(data);
-
     			$('body').append("<div id='ts"+n+"'>" + data + "</div>");
-
                    	$('#ts'+n).dialog({
                         	title: "Time Series #" + n + "   (X=" + xlim1 + ":" + xlim2 + "@ave, Y=" + ylim1 + ":" + ylim2 + "@ave)",
                         	width: 640
@@ -282,6 +283,16 @@ $('#timeSeries').on('click', function() {
        },
    });
 
+});
+
+//===============================================
+$(document).on('click', '.ts_close', function() {
+	console.log("Closing ts dialog");
+	console.log($(this).parent());
+	if ($(this).parent().data("ui-dialog")) {
+		console.log("---> in");
+        	$(this).parent().dialog('close');
+	}
 });
 
 //===============================================

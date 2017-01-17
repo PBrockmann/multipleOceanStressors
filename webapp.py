@@ -170,7 +170,7 @@ def timeSeriesDisplay():
 	hover1 = HoverTool(tooltips=[("date, var", "(@datestr, @var)")])
 	tools1 = ["pan,resize,wheel_zoom,crosshair",hover1,"reset,save"]
 
-	title='Model-mean timeseries for ' + VAR + ' over [X: ' + XTRANS + ', Y: ' + YTRANS + ']'
+	title = 'Model-mean timeseries for ' + VAR + ' over [X: ' + XTRANS + ', Y: ' + YTRANS + ']'
 	plot1 = figure(plot_width=600, plot_height=400, x_axis_type="datetime", min_border=10, tools=tools1, 
 		title=title)
 
@@ -182,11 +182,13 @@ def timeSeriesDisplay():
 	plot1.background_fill_color = "beige"
 	plot1.background_fill_alpha = 1.0
 
-	script, div = components(plot1)
+	bk_script, bk_div = components(plot1)
 
 	downloadButtonString = '<a href="/timeSeriesDownload?FILENAME=' + tmpname + '"><button class="btn btn-default">Download</button></a>'
+	closeButtonString = '<a href="/timeSeriesClose?FILENAME=' + tmpname + '"><button class="btn btn-default ts_close">Close</button></a>'
+	#closeButtonString = '<button class="btn btn-default ts_close">Close</button>'
 
-	return Response(iter(script + div + downloadButtonString), mimetype="text/html")
+	return Response(iter(bk_script + bk_div + downloadButtonString + closeButtonString), mimetype="text/html")
 
     except Exception, e:
 	return(str(e)) 
@@ -218,7 +220,7 @@ def timeSeriesClose():			# should be triggered somehow by the $("#ts"+n).on("dia
 	fname = fields['FILENAME']
 	os.remove(tmpdir + "/" + fname)
 
-	return
+	return Response(iter(''), status=204)
 
     except Exception, e:
 	return(str(e)) 
