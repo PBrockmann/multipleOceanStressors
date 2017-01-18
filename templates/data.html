@@ -54,7 +54,11 @@
 	#timeSeries {
 		position: relative;
 		left: 5px;
+		margin-bottom: 10px;
 	} 
+	#print {
+		margin-bottom: 10px;
+	}
 	#mainTitle {
 		font-weight: bold;
 		position: relative;
@@ -74,12 +78,26 @@
 		margin-top: 20px;
 		margin-right : 10px;
 	}
+	@media print {
+	   @page {
+      		size: A4 landscape;
+		position: absolute;
+      		margin-top: 30px;
+      		margin-left: 130px;
+      		margin-bottom: 0;
+      		font-family: Arial,Helvetica,sans-serif;
+    	   } 
+           .noPrint { display: none; }
+           .toPrint { display: inline !important; }
+	   .leaflet-control-container { display: none; }
+	}
     </style>
 {% endblock %}
 
 
 {% block page_content %}
 
+<div class="noPrint">
 <fieldset id="dimension" class="userChoices">
   <legend title="Select a stressor to view its intensity change under all RCP scenarios 
 or select a scenario to view intensity changes of all four stressors.">Select</legend>
@@ -113,8 +131,7 @@ or select a scenario to view intensity changes of all four stressors.">Select</l
 <input id="toggleStippling" type="checkbox">
 
 <br><br><br>
-
-<div id="toPrint">
+</div>
 
 <div id="mainTitle">
 Changes in stressor intensity in 2090-2099 relative to 1990-1999
@@ -128,10 +145,18 @@ Changes in stressor intensity in 2090-2099 relative to 1990-1999
 </div>
 {% endfor -%}
 
+<div class="toPrint" style="display: none;">
+<p style="font-size: 10px !important; margin-top: 30px;">
+&copy; IPSL/LSCE 2017 - Maps from http://OceanStressors.ipsl.fr<br>
+Bopp, Laurent, et al. "Multiple stressors of ocean ecosystems in the 21st century: projections with CMIP5 models." (2013).<br>
+DOI: 10.5194/bg-10-6225-2013
 </div>
 
+<div class="noPrint">
 <br>
 <button id="timeSeries" class="btn btn-default">Time series</button>
+<button id="print" class="btn btn-default">Print</button>
+</div>
 
 <script type='text/javascript'>
 
@@ -320,6 +345,12 @@ $('#toggleStippling').change(function() {
 
 //===============================================
 $('#dimension').change();
+
+//===============================================
+$('#print').on('click', function() {
+	window.print();
+});
+
 
 </script>
 {% endblock %}
