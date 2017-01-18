@@ -273,7 +273,7 @@ $('#dimension').on('change', function() {
         	wmspyferret_var[mapId].setParams({ command: command, variable: variable });
         	wmspyferret_mask[mapId].setParams({ variable: mask });
 		$('#title'+mapId).html(title);
-		$('#key'+mapId).children('img').attr('src', 'http://webportals.ipsl.jussieu.fr/gunicorn1/?SERVICE=WMS&REQUEST=GetColorBar' +
+		$('#key'+mapId).children('img').attr('src', 'http://webportals.ipsl.jussieu.fr/gunicorn1?SERVICE=WMS&REQUEST=GetColorBar' +
 								'&COMMAND=' + command +
 								'&VARIABLE=' + variable);
 	}
