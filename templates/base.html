@@ -11,6 +11,11 @@
 <link href="{{ url_for('static', filename = 'lib/sticky-footer-navbar.css') }}" rel="stylesheet">
 <link href="{{ url_for('static', filename = 'lib/pace-theme-loading-bar.min.css') }}" rel="stylesheet">
 <script src="{{ url_for('static', filename = 'lib/pace.min.js') }}"></script>
+<style type='text/css'>
+.navbar-nav > .active > a {
+    font-weight: bold !important;
+}
+</style>
 {% endblock %}
 </head>
 
@@ -25,14 +30,14 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/multipleOceanStressors">Ocean Stressors</a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li><a href="/multipleOceanStressors/data">Explore/Download</a></li>
-                <li><a href="/multipleOceanStressors/notebooks">Notebooks</a></li>
-                <li><a href="/multipleOceanStressors/help">Help</a></li>
-                <li><a href="/multipleOceanStressors/contact">Contact</a></li>
+            	<li><a id="index" class="navbar-brand" href="/">Ocean Stressors</a></li>
+                <li><a id="data" href="/data">Explore/Download</a></li>
+                <li><a id="notebooks" href="/notebooks">Notebooks</a></li>
+                <li><a id="help" href="/help">Help</a></li>
+                <li><a id="contact" href="/contact">Contact</a></li>
             </ul>
         </div>
     </div>
@@ -47,6 +52,12 @@
 		<p class="text-muted credit">Created by <a target="_blank" href="http://www.lsce.ipsl.fr/en"><span title="Climate and Environment Sciences Laboratory" style="font-weight:bold;">LSCE</span></a>&nbsp;<a target="_blank" href="http://www.lsce.ipsl.fr/en"><img src="{{ url_for('static', filename = 'images/LSCE_Icon.png') }}" title="Climate and Environment Sciences Laboratory"/></a> and hosted by <a target="_blank" href="http://www.ipsl.fr/en"><span title="Institut Pierre Simon Laplace" style="font-weight:bold;">IPSL</span></a>&nbsp;<a target="_blank" href="http://www.ipsl.fr/en"><img src="{{ url_for('static', filename = 'images/IPSL_logo.png') }}" title="Institut Pierre Simon Laplace"/></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Version 0.6 - 2017/01/12</p>
       </div>
 </footer>
+
+<script>
+$(document).ready(function () {
+    $("#{{request.endpoint}}").parent().addClass("active");
+});
+</script>
 
 {% endblock %}
 
