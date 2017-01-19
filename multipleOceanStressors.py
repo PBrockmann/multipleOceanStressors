@@ -25,8 +25,9 @@ from bokeh.models import DatetimeTickFormatter
 from bokeh.models import HoverTool, BoxAnnotation
 from bokeh.embed import components
 
+
 #==============================================================
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='/ScientificApps/dev/forge_patrick/multipleOceanStressors/static')
 
 #--------------------------------------------------------------
 @app.errorhandler(404)
@@ -70,7 +71,7 @@ def wmspyferret():
 	COMMAND = fields['COMMAND']
 	VARIABLE = fields['VARIABLE']
 	
-	pyferret.run('go envScript.jnl')
+	pyferret.run('go /var/www/html/ScientificApps/dev/forge_patrick/multipleOceanStressors/pyferretWMS1.jnl')
 	
 	try:
 	        MASK = fields['MASK']
@@ -138,13 +139,14 @@ def timeSeriesDisplay():
     fields = request.args
     try:
 	#VAR = fields['VAR']
-	VAR = 'UWND'
-	XTRANS = fields['XLIM'] + "@ave"
-	YTRANS = fields['YLIM'] + "@ave"
+	VAR = 'THETAO'
+	#VAR = 'UWND'
+	XTRANS = fields['XLIM'] + "@AVE"
+	YTRANS = fields['YLIM'] + "@AVE"
 
-	#pyferret.run("use /prodigfs/project/CARBON/CRESCENDO/thetao_Oyr_ALL_historical_r1i1p1_1870-2005.nc")
-	pyferret.run("use monthly_navy_winds.cdf")
-	pyferret.run(str("let var=" + VAR + "[k=1,m=1,x=" + XTRANS + ",y=" + YTRANS + "]"))  # str used here to convert unicode
+	pyferret.run("use /prodigfs/project/CARBON/CRESCENDO/thetao_Oyr_ALL_historical_r1i1p1_1870-2005.nc")
+	#pyferret.run("use monthly_navy_winds.cdf")
+	pyferret.run(str("let var=" + VAR + "[k=1,m=@ave,x=" + XTRANS + ",y=" + YTRANS + "]"))  # str used here to convert unicode
 
 	tmpname = tempfile.NamedTemporaryFile(suffix='.csv').name
 	tmpname = os.path.basename(tmpname)
@@ -170,7 +172,7 @@ def timeSeriesDisplay():
 	hover1 = HoverTool(tooltips=[("date, var", "(@datestr, @var)")])
 	tools1 = ["pan,resize,wheel_zoom,crosshair",hover1,"reset,save"]
 
-	title = 'Model-mean timeseries for ' + VAR + ' over [X: ' + XTRANS + ', Y: ' + YTRANS + ']'
+	title = 'Model-mean timeseries for ' + VAR + '[X=' + XTRANS + ', Y=' + YTRANS + ', M=@AVE]'
 	plot1 = figure(plot_width=600, plot_height=400, x_axis_type="datetime", min_border=10, tools=tools1, 
 		title=title)
 
@@ -181,11 +183,12 @@ def timeSeriesDisplay():
 
 	plot1.background_fill_color = "beige"
 	plot1.background_fill_alpha = 1.0
+	plot1.title.text_font_size = '12px'
 
 	bk_script, bk_div = components(plot1)
 
-	downloadButtonString = '<a href="/timeSeriesDownload?FILENAME=' + tmpname + '"><button class="btn btn-default">Download</button></a>'
-	closeButtonString = '<a href="/timeSeriesClose?FILENAME=' + tmpname + '"><button class="btn btn-default ts_close">Close</button></a>'
+	downloadButtonString = '<a href="/multipleOceanStressors/timeSeriesDownload?FILENAME=' + tmpname + '"><button class="btn btn-default">Download</button></a>'
+	closeButtonString = '<a href="/multipleOceanStressors/timeSeriesClose?FILENAME=' + tmpname + '"><button class="btn btn-default ts_close">Close</button></a>'
 
 	return Response(iter(bk_script + bk_div + downloadButtonString + closeButtonString), mimetype="text/html")
 
@@ -302,7 +305,8 @@ options = {
     'bind': '%s:%s' % ('127.0.0.1', 5000),
     'workers': number_of_workers(),
     'worker_class': 'sync',
-    'threads': 1
+    'threads': 1,
+    'timeout': 60
 }
 StandaloneApplication(app, options).run()
 
