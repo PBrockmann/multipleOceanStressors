@@ -1,21 +1,50 @@
 {% extends "base.html" %}
 
+{% block head %}
+{{ super() }}
+    <style type='text/css'>
+ 	.row {
+		margin-bottom: 30px;
+	}
+	.figure img {
+		width: 400px;
+		height: 300px;
+	}
+	.figure-caption {
+		width: 400px;
+		text-align: center;
+	}
+    </style>
+{% endblock %}
+
 {% block page_content %}
-      	<div class="row">
-              <div class="col-xs-12">
 
-		<b><p>Intro: </b>
+<div class="row">
+ 	<div class="col-lg-8">
+	 		<h3>Multiple stressors of ocean ecosystems</h3>
+			<p>Here, we present an interactive interface to explore simulations published in <a href='http://www.biogeosciences.net/10/6225/2013/' target='_blank'>Bopp et al. (2013)</a> to assess how four major stressors of open ocean ecosystems could evolve over the course of the 21st century: sea surface warming, surface pH, subsurface dissolved O<sub>2</sub> concentration, and primary productivity by marine phytoplankton (NPP).</p>
+	</div>
+</div>
 
-<p>
-Utque proeliorum periti rectores primo catervas densas opponunt et fortes, deinde leves armaturas, post iaculatores ultimasque subsidiales acies, si fors adegerit, iuvaturas, ita praepositis urbanae familiae suspensae digerentibus sollicite, quos insignes faciunt virgae dexteris aptatae velut tessera data castrensi iuxta vehiculi frontem omne textrinum incedit: huic atratum coquinae iungitur ministerium, dein totum promiscue servitium cum otiosis plebeiis de vicinitate coniunctis: postrema multitudo spadonum a senibus in pueros desinens, obluridi distortaque lineamentorum conpage deformes, ut quaqua incesserit quisquam cernens mutilorum hominum agmina detestetur memoriam Samiramidis reginae illius veteris, quae teneros mares castravit omnium prima velut vim iniectans naturae, eandemque ab instituto cursu retorquens, quae inter ipsa oriundi crepundia per primigenios seminis fontes tacita quodam modo lege vias propagandae posteritatis ostendit.
-<br>
-<img width="20%" src="{{ url_for('static', filename = 'images/Fig4_screenshot.png') }}" />
+<div class="row">
+        <div class="col-xs-6">
+		<figure class="figure">
+			<img src="{{ url_for('static', filename = 'images/Fig4_screenshot.png') }}" />
+  			<figcaption class="figure-caption">Change in stressor intensity in 2090&ndash;2099 relative to 1990&ndash;1999 under RCP8.5. for the four major stressors averaged over 10 Earth system models.</figcaption>
+		</figure>
+	</div>
 
-<p>
-Quanta autem vis amicitiae sit, ex hoc intellegi maxime potest, quod ex infinita societate generis humani, quam conciliavit ipsa natura, ita contracta res est et adducta in angustum ut omnis caritas aut inter duos aut inter paucos iungeretur.
-<br>
-<img width="20%" src="{{ url_for('static', filename = 'images/Fig5_screenshot.png') }}" />
+	<div class="col-xs-6">
+		<figure class="figure">
+			<img  src="{{ url_for('static', filename = 'images/Fig5_screenshot.png') }}" />
+  			<figcaption class="figure-caption">Model-mean time series of the stressors from 1870&ndash;2100 using historical and all RCP simulations.</figcaption>
+	</div>
+</div>
 
-              </div>
-        </div>
+<div class="row">
+	 	<div class="col-lg-8">
+			<p>Navigate to "Explore/Download" to view simulated changes in stressor intensities under each RCP scenario plotted on synchronized, zoomable maps or as a timeseries.</p>
+		</div>
+</div>
+
 {% endblock %}
