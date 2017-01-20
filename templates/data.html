@@ -352,6 +352,16 @@ $('#print').on('click', function() {
 	window.print();
 });
 
+//===============================================
+$('.map').resizable();
+$('.map').on('resizestop', function() {
+	width = $(this).width();
+	height = $(this).height();
+	for (mapId = 1; mapId <= {{ nbMaps }} ; mapId++) { 
+		$('#map'+mapId).width(width);
+		$('#map'+mapId).height(height);
+	}
+});
 
 </script>
 {% endblock %}
