@@ -7,3 +7,5 @@ Please visit https://github.com/PBrockmann/wms-pyferret for more information on 
 where only a gunicorn server is used.
 
 The use of Flask framework with the Gunicorn server was investigated here https://github.com/KatiRG/wms-pyferret
+
+![Screencast](https://github.com/PBrockmann/multipleOceanStressors/raw/master/screencast_01.png) 
