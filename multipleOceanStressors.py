@@ -74,9 +74,9 @@ def wmspyferret():
 	pyferret.run('go /var/www/html/ScientificApps/dev/forge_patrick/multipleOceanStressors/pyferretWMS1.jnl')
 	
 	try:
-	        MASK = fields['MASK']
+	        PATTERN = fields['PATTERN']
 	except:
-	        MASK = None
+	        PATTERN = None
 	
 	tmpname = tempfile.NamedTemporaryFile(suffix='.png').name
 	tmpname = os.path.basename(tmpname)
@@ -111,10 +111,10 @@ def wmspyferret():
 	        pyferret.run('frame/format=PNG/transparent/xpixels=' + str(WIDTH) + '/file="' + tmpdir + '/' + tmpname + '"')
 	
 	        if os.path.isfile(tmpdir + '/' + tmpname):
-	                if MASK:
+	                if PATTERN:
 	                        img = Image.open(tmpdir + '/' + tmpname)
-	                        mask = Image.open(MASK)
-	                        img = Image.composite(img, mask, mask)
+	                        pattern = Image.open(PATTERN)
+	                        img = Image.composite(img, pattern, pattern)
 	                        img.save(tmpdir + '/' + tmpname)
 	
 	#---------------------------------------------------------
