@@ -4,132 +4,72 @@ SET REDIRECT/CLOBBER/FILE="/dev/null" STDERR
 SET MEMORY/SIZE=300
 
 !=============================
-use "/prodigfs/project/CARBON/CRESCENDO/thetao_Oclim_ALL_piControl_r1i1p1_1990-1999.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/thetao_Oclim_ALL_piControl_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/thetao_Oclim_ALL_historical_r1i1p1_1990-1999.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/thetao_Oclim_ALL_rcp85_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/thetao_Oclim_ALL_rcp60_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/thetao_Oclim_ALL_rcp45_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/thetao_Oclim_ALL_rcp26_r1i1p1_2090-2099.nc"
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/intpp_rcp26_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/intpp_rcp45_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/intpp_rcp60_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/intpp_rcp85_MEAN_r1i1p1_2090_2099.nc
 
-let SST = THETAO[k=1,gt=time@asn]
-let D_SST_RCP85 = (SST[d=4]-SST[d=3] - (SST[d=2]-SST[d=1]))
-let D_SST_RCP60 = (SST[d=5]-SST[d=3] - (SST[d=2]-SST[d=1]))
-let D_SST_RCP45 = (SST[d=6]-SST[d=3] - (SST[d=2]-SST[d=1]))
-let D_SST_RCP26 = (SST[d=7]-SST[d=3] - (SST[d=2]-SST[d=1]))
+def sym nbf=`4*0`
 
-let AVG_D_SST_RCP85 = D_SST_RCP85[m=@ave]
-let STD_D_SST_RCP85 = D_SST_RCP85[m=@var]^0.5
-let MASK_D_SST_RCP85 = if abs(AVG_D_SST_RCP85) gt STD_D_SST_RCP85 then 1
-
-let AVG_D_SST_RCP60 = D_SST_RCP60[m=@ave]
-let STD_D_SST_RCP60 = D_SST_RCP60[m=@var]^0.5
-let MASK_D_SST_RCP60 = if abs(AVG_D_SST_RCP60) gt STD_D_SST_RCP60 then 1
-
-let AVG_D_SST_RCP45 = D_SST_RCP45[m=@ave]
-let STD_D_SST_RCP45 = D_SST_RCP45[m=@var]^0.5
-let MASK_D_SST_RCP45 = if abs(AVG_D_SST_RCP45) gt STD_D_SST_RCP45 then 1
-
-let AVG_D_SST_RCP26 = D_SST_RCP26[m=@ave]
-let STD_D_SST_RCP26 = D_SST_RCP26[m=@var]^0.5
-let MASK_D_SST_RCP26 = if abs(AVG_D_SST_RCP26) gt STD_D_SST_RCP26 then 1
+let INTPP_RCP26 = TEMP[d=`($nbf)+1`] 
+let INTPP_RCP45 = TEMP[d=`($nbf)+2`] 
+let INTPP_RCP60 = TEMP[d=`($nbf)+3`] 
+let INTPP_RCP85 = TEMP[d=`($nbf)+4`] 
+let SIGN_INTPP_RCP26 = SIGN[d=`($nbf)+1`] 
+let SIGN_INTPP_RCP45 = SIGN[d=`($nbf)+2`] 
+let SIGN_INTPP_RCP60 = SIGN[d=`($nbf)+3`] 
+let SIGN_INTPP_RCP85 = SIGN[d=`($nbf)+4`] 
 
 !=============================
-use "/prodigfs/project/CARBON/CRESCENDO/ph_Oclim_ALL_piControl_r1i1p1_1990-1999.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/ph_Oclim_ALL_piControl_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/ph_Oclim_ALL_historical_r1i1p1_1990-1999.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/ph_Oclim_ALL_rcp85_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/ph_Oclim_ALL_rcp60_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/ph_Oclim_ALL_rcp45_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/ph_Oclim_ALL_rcp26_r1i1p1_2090-2099.nc"
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/pH_rcp26_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/pH_rcp45_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/pH_rcp60_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/pH_rcp85_MEAN_r1i1p1_2090_2099.nc
 
-def sym nbf=7
+def sym nbf=`4*1`
 
-let SPH = PH[k=1,gt=time@asn]
-let D_PH_RCP85  = (SPH[d=`4+($nbf)`]-SPH[d=`3+($nbf)`] - (SPH[d=`2+($nbf)`]-SPH[d=`1+($nbf)`]))
-let D_PH_RCP60  = (SPH[d=`5+($nbf)`]-SPH[d=`3+($nbf)`] - (SPH[d=`2+($nbf)`]-SPH[d=`1+($nbf)`]))
-let D_PH_RCP45  = (SPH[d=`6+($nbf)`]-SPH[d=`3+($nbf)`] - (SPH[d=`2+($nbf)`]-SPH[d=`1+($nbf)`]))
-let D_PH_RCP26  = (SPH[d=`7+($nbf)`]-SPH[d=`3+($nbf)`] - (SPH[d=`2+($nbf)`]-SPH[d=`1+($nbf)`]))
-
-let AVG_D_PH_RCP85 = D_PH_RCP85[m=@ave]
-let STD_D_PH_RCP85 = D_PH_RCP85[m=@var]^0.5
-let MASK_D_PH_RCP85 = if abs(AVG_D_PH_RCP85) gt STD_D_PH_RCP85 then 1
-
-let AVG_D_PH_RCP60 = D_PH_RCP60[m=@ave]
-let STD_D_PH_RCP60 = D_PH_RCP60[m=@var]^0.5
-let MASK_D_PH_RCP60 = if abs(AVG_D_PH_RCP60) gt STD_D_PH_RCP60 then 1
-
-let AVG_D_PH_RCP45 = D_PH_RCP45[m=@ave]
-let STD_D_PH_RCP45 = D_PH_RCP45[m=@var]^0.5
-let MASK_D_PH_RCP45 = if abs(AVG_D_PH_RCP45) gt STD_D_PH_RCP45 then 1
-
-let AVG_D_PH_RCP26 = D_PH_RCP26[m=@ave]
-let STD_D_PH_RCP26 = D_PH_RCP26[m=@var]^0.5
-let MASK_D_PH_RCP26 = if abs(AVG_D_PH_RCP26) gt STD_D_PH_RCP26 then 1
+let PH_RCP26 = TEMP[d=`($nbf)+1`] 
+let PH_RCP45 = TEMP[d=`($nbf)+2`] 
+let PH_RCP60 = TEMP[d=`($nbf)+3`] 
+let PH_RCP85 = TEMP[d=`($nbf)+4`] 
+let SIGN_PH_RCP26 = SIGN[d=`($nbf)+1`] 
+let SIGN_PH_RCP45 = SIGN[d=`($nbf)+2`] 
+let SIGN_PH_RCP60 = SIGN[d=`($nbf)+3`] 
+let SIGN_PH_RCP85 = SIGN[d=`($nbf)+4`] 
 
 !=============================
-use "/prodigfs/project/CARBON/CRESCENDO/o2_Oclim_ALL_piControl_r1i1p1_1990-1999.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/o2_Oclim_ALL_piControl_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/o2_Oclim_ALL_historical_r1i1p1_1990-1999.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/o2_Oclim_ALL_rcp85_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/o2_Oclim_ALL_rcp60_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/o2_Oclim_ALL_rcp45_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/o2_Oclim_ALL_rcp26_r1i1p1_2090-2099.nc"
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/sst_rcp26_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/sst_rcp45_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/sst_rcp60_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/sst_rcp85_MEAN_r1i1p1_2090_2099.nc
 
-def sym nbf=`7*2`
+def sym nbf=`4*2`
 
-let SO2 = O2[z=200:600@ave,gt=time@asn]*1000
-let D_O2_RCP85  = (SO2[d=`4+($nbf)`]-SO2[d=`3+($nbf)`] - (SO2[d=`2+($nbf)`]-SO2[d=`1+($nbf)`]))
-let D_O2_RCP60  = (SO2[d=`5+($nbf)`]-SO2[d=`3+($nbf)`] - (SO2[d=`2+($nbf)`]-SO2[d=`1+($nbf)`]))
-let D_O2_RCP45  = (SO2[d=`6+($nbf)`]-SO2[d=`3+($nbf)`] - (SO2[d=`2+($nbf)`]-SO2[d=`1+($nbf)`]))
-let D_O2_RCP26  = (SO2[d=`7+($nbf)`]-SO2[d=`3+($nbf)`] - (SO2[d=`2+($nbf)`]-SO2[d=`1+($nbf)`]))
-
-let AVG_D_O2_RCP85 = D_O2_RCP85[m=@ave]
-let STD_D_O2_RCP85 = D_O2_RCP85[m=@var]^0.5
-let MASK_D_O2_RCP85 = if abs(AVG_D_O2_RCP85) gt STD_D_O2_RCP85 then 1
-
-let AVG_D_O2_RCP60 = D_O2_RCP60[m=@ave]
-let STD_D_O2_RCP60 = D_O2_RCP60[m=@var]^0.5
-let MASK_D_O2_RCP60 = if abs(AVG_D_O2_RCP60) gt STD_D_O2_RCP60 then 1
-
-let AVG_D_O2_RCP45 = D_O2_RCP45[m=@ave]
-let STD_D_O2_RCP45 = D_O2_RCP45[m=@var]^0.5
-let MASK_D_O2_RCP45 = if abs(AVG_D_O2_RCP45) gt STD_D_O2_RCP45 then 1
-
-let AVG_D_O2_RCP26 = D_O2_RCP26[m=@ave]
-let STD_D_O2_RCP26 = D_O2_RCP26[m=@var]^0.5
-let MASK_D_O2_RCP26 = if abs(AVG_D_O2_RCP26) gt STD_D_O2_RCP26 then 1
+let SST_RCP26 = TEMP[d=`($nbf)+1`] 
+let SST_RCP45 = TEMP[d=`($nbf)+2`] 
+let SST_RCP60 = TEMP[d=`($nbf)+3`] 
+let SST_RCP85 = TEMP[d=`($nbf)+4`] 
+let SIGN_SST_RCP26 = SIGN[d=`($nbf)+1`] 
+let SIGN_SST_RCP45 = SIGN[d=`($nbf)+2`] 
+let SIGN_SST_RCP60 = SIGN[d=`($nbf)+3`] 
+let SIGN_SST_RCP85 = SIGN[d=`($nbf)+4`] 
 
 !=============================
-use "/prodigfs/project/CARBON/CRESCENDO/intpp_Oclim_ALL_piControl_r1i1p1_1990-1999.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/intpp_Oclim_ALL_piControl_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/intpp_Oclim_ALL_historical_r1i1p1_1990-1999.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/intpp_Oclim_ALL_rcp85_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/intpp_Oclim_ALL_rcp60_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/intpp_Oclim_ALL_rcp45_r1i1p1_2090-2099.nc"
-use "/prodigfs/project/CARBON/CRESCENDO/intpp_Oclim_ALL_rcp26_r1i1p1_2090-2099.nc"
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/subO2_rcp26_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/subO2_rcp45_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/subO2_rcp60_MEAN_r1i1p1_2090_2099.nc
+use /prodigfs/project/CARBON/CRESCENDO/MAPS/subO2_rcp85_MEAN_r1i1p1_2090_2099.nc
 
-def sym nbf=`7*3`
+def sym nbf=`4*3`
 
-let SINTPP = intpp[k=1,gt=time@asn]*3600*24*12*1000
-let D_INTPP_RCP85  = (SINTPP[d=`4+($nbf)`]-SINTPP[d=`3+($nbf)`] - (SINTPP[d=`2+($nbf)`]-SINTPP[d=`1+($nbf)`]))
-let D_INTPP_RCP60  = (SINTPP[d=`5+($nbf)`]-SINTPP[d=`3+($nbf)`] - (SINTPP[d=`2+($nbf)`]-SINTPP[d=`1+($nbf)`]))
-let D_INTPP_RCP45  = (SINTPP[d=`6+($nbf)`]-SINTPP[d=`3+($nbf)`] - (SINTPP[d=`2+($nbf)`]-SINTPP[d=`1+($nbf)`]))
-let D_INTPP_RCP26  = (SINTPP[d=`7+($nbf)`]-SINTPP[d=`3+($nbf)`] - (SINTPP[d=`2+($nbf)`]-SINTPP[d=`1+($nbf)`]))
+let O2_RCP26 = TEMP[d=`($nbf)+1`]*1000 
+let O2_RCP45 = TEMP[d=`($nbf)+2`]*1000 
+let O2_RCP60 = TEMP[d=`($nbf)+3`]*1000 
+let O2_RCP85 = TEMP[d=`($nbf)+4`]*1000 
+let SIGN_O2_RCP26 = SIGN[d=`($nbf)+1`] 
+let SIGN_O2_RCP45 = SIGN[d=`($nbf)+2`] 
+let SIGN_O2_RCP60 = SIGN[d=`($nbf)+3`] 
+let SIGN_O2_RCP85 = SIGN[d=`($nbf)+4`] 
 
-let AVG_D_INTPP_RCP85 = D_INTPP_RCP85[m=@ave]
-let STD_D_INTPP_RCP85 = D_INTPP_RCP85[m=@var]^0.5
-let MASK_D_INTPP_RCP85 = if abs(AVG_D_INTPP_RCP85) gt STD_D_INTPP_RCP85 then 1
-
-let AVG_D_INTPP_RCP60 = D_INTPP_RCP60[m=@ave]
-let STD_D_INTPP_RCP60 = D_INTPP_RCP60[m=@var]^0.5
-let MASK_D_INTPP_RCP60 = if abs(AVG_D_INTPP_RCP60) gt STD_D_INTPP_RCP60 then 1
-
-let AVG_D_INTPP_RCP45 = D_INTPP_RCP45[m=@ave]
-let STD_D_INTPP_RCP45 = D_INTPP_RCP45[m=@var]^0.5
-let MASK_D_INTPP_RCP45 = if abs(AVG_D_INTPP_RCP45) gt STD_D_INTPP_RCP45 then 1
-
-let AVG_D_INTPP_RCP26 = D_INTPP_RCP26[m=@ave]
-let STD_D_INTPP_RCP26 = D_INTPP_RCP26[m=@var]^0.5
-let MASK_D_INTPP_RCP26 = if abs(AVG_D_INTPP_RCP26) gt STD_D_INTPP_RCP26 then 1
+!=============================
 
