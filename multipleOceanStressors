@@ -24,7 +24,7 @@ case "$1" in
         echo "Starting $service"
         if [ ! -e /var/run/$service.pid ]; then
                 export PATH="/home/webportals/anaconda2/bin:$PATH"
-                . /home/webportals/PyFerret-7.0.0-RHEL6-64/ferret_paths.sh
+                . /home/webportals/pyferret-7.1.0-RHEL6-64/ferret_paths.sh
                 $DIR/multipleOceanStressors.py &
                 echo $! > /var/run/$service.pid
         else
