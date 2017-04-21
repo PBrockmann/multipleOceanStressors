@@ -13,7 +13,7 @@
     <style type='text/css'>
         .mapContainer { display: inline-block; margin-left: 10px; margin-top: 10px;}
         .title { font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-align: center; }
-        .map { width: 400px; height: 200px; }
+        .map { width: 500px; height: 250px; }
         .key { text-align: center; margin: auto; }
         .key img { width: 400px; height: 50px; max-width: 400px; }
 	.leaflet-bar a, .leaflet-bar a:hover {
@@ -144,7 +144,9 @@ Changes in stressor intensity in 2090-2099 relative to 1990-1999
 
 {% for aDict in cmdArray -%}
 <div class='mapContainer'>
-   <div id='title{{ loop.index }}' class='title'></div>
+   <div id='mapHeader{{ loop.index }}' class='header'>
+   	<div id='title{{ loop.index }}' class='title'></div>
+   </div>
    <div id='map{{ loop.index }}' class='map'></div>
    <div id='key{{ loop.index }}' class='key'><img /></div>
 </div>
@@ -216,8 +218,8 @@ wmspyferret_mask[{{ loop.index }}] = L.tileLayer.wms('/multipleOceanStressors/wm
 map[{{ loop.index }}] = L.map('map{{ loop.index }}', {
     layers: [wmspyferret_var[{{ loop.index }}], frontiers[{{ loop.index }}], wmspyferret_mask[{{ loop.index }}]],
     crs: crs,
-    center: [0,-40],
-    zoom: 1,
+    center: [0,0],
+    zoom: 0,
     attributionControl: false
 });
 
@@ -352,6 +354,9 @@ $('.map').on('resizestop', function() {
 	for (mapId = 1; mapId <= {{ nbMaps }} ; mapId++) { 
 		$('#map'+mapId).width(width);
 		$('#map'+mapId).height(height);
+		$('#mapHeader'+mapId).width(width);
+                $('#key'+mapId).children('img').css('width', width + 'px');
+                $('#key'+mapId).children('img').css('height', parseInt(width/8) + 'px');                // according to ratio 400/50 = 8
 	}
 });
 
