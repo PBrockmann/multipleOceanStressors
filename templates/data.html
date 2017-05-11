@@ -5,6 +5,8 @@
     <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/leaflet.css') }}" />
     <script src="{{ url_for('static', filename = 'lib/leaflet.js') }}"></script>
     <script src="{{ url_for('static', filename = 'lib/L.Map.Sync.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename = 'lib/Control.Loading.css') }}" />
+    <script src="{{ url_for('static', filename = 'lib/Control.Loading.js') }}"></script>
     <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/bokeh-0.12.3.min.css') }}" />
     <script src="{{ url_for('static', filename = 'lib/bokeh-0.12.3.min.js') }}"></script>
     <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/bootstrap-toggle.min.css') }}" />
@@ -25,6 +27,8 @@
     		font-size: 14px;
 		text-indent: 0px;
 	}
+	.leaflet-control-container { visibility: hidden; }
+        .mapContainer:hover .leaflet-control-container { visibility: visible; }
 	#dimension{
 		display: block;
 	}
@@ -220,7 +224,8 @@ map[{{ loop.index }}] = L.map('map{{ loop.index }}', {
     crs: crs,
     center: [0,0],
     zoom: 0,
-    attributionControl: false
+    attributionControl: false,
+    loadingControl: true
 });
 
 // If needed control can be added with 
