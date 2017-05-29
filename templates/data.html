@@ -7,8 +7,8 @@
     <script src="{{ url_for('static', filename = 'lib/L.Map.Sync.js') }}"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename = 'lib/Control.Loading.css') }}" />
     <script src="{{ url_for('static', filename = 'lib/Control.Loading.js') }}"></script>
-    <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/bokeh-0.12.3.min.css') }}" />
-    <script src="{{ url_for('static', filename = 'lib/bokeh-0.12.3.min.js') }}"></script>
+    <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/bokeh.min.css') }}" />
+    <script src="{{ url_for('static', filename = 'lib/bokeh.min.js') }}"></script>
     <link rel='stylesheet' href="{{ url_for('static', filename = 'lib/bootstrap-toggle.min.css') }}" />
     <script src="{{ url_for('static', filename = 'lib/bootstrap-toggle.min.js') }}"></script>
 
@@ -261,6 +261,7 @@ $('#dimension').on('change', function() {
 			title = '<b>' + scenarioList[mapId-1] + '</b> &ndash; ' + titleDict[variableToDisplay];
 			mask = mask.replace('VVVVV', variableToDisplay);
 			mask = mask.replace('SSSSS', scenarioList[mapId-1]);
+			$('#timeSeries').prop('disabled', false);
 		} else { 
 			command = command.replace('QQQQQ', qualifiersDict[variableList[mapId-1]]);
 			variable = variable.replace('VVVVV', variableList[mapId-1]);
@@ -268,6 +269,7 @@ $('#dimension').on('change', function() {
 			title = '<b>' + titleDict[variableList[mapId-1]] + '</b> &ndash; ' + scenarioToDisplay;
 			mask = mask.replace('VVVVV', variableList[mapId-1]);
 			mask = mask.replace('SSSSS', scenarioToDisplay);
+			$('#timeSeries').prop('disabled', true);
 		}
         	wmspyferret_var[mapId].setParams({ command: command, variable: variable });
         	wmspyferret_mask[mapId].setParams({ variable: mask });
